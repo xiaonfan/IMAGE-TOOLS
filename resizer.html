@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Resizer</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #4a6bff;
+        }
+        #imagePreview {
+            max-width: 100%;
+            margin-top: 20px;
+            display: none;
+        }
+        .controls {
+            margin-top: 20px;
+        }
+        input[type="range"], input[type="number"] {
+            width: 100%;
+            margin: 10px 0;
+        }
+        button {
+            background: #4a6bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background: #3a5bef;
+        }
+        a.back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4a6bff;
+            text-decoration: none;
+        }
+        a.back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-expand"></i> Image Resizer</h1>
+        <div class="upload-area" id="uploadArea">
+            <p>Drag & Drop your image here or click to browse</p>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            <img id="imagePreview" alt="Preview">
+        </div>
+        <div class="controls" id="controls" style="display: none;">
+            <label for="width">Width (px):</label>
+            <input type="range" id="width" min="50" max="2000" value="800">
+            <input type="number" id="widthValue" min="50" max="2000" value="800">
+            
+            <label for="height">Height (px):</label>
+            <input type="range" id="height" min="50" max="2000" value="600">
+            <input type="number" id="heightValue" min="50" max="2000" value="600">
+            
+            <button id="resizeBtn">Resize Image</button>
+            <button id="downloadBtn">Download</button>
+        </div>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const controls = document.getElementById('controls');
+        const widthSlider = document.getElementById('width');
+        const widthInput = document.getElementById('widthValue');
+        const heightSlider = document.getElementById('height');
+        const heightInput = document.getElementById('heightValue');
+        const resizeBtn = document.getElementById('resizeBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let originalImage = null;
+
+        // Upload image
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                    controls.style.display = 'block';
+                    originalImage = new Image();
+                    originalImage.src = event.target.result;
+                    originalImage.onload = () => {
+                        widthSlider.value = originalImage.width;
+                        widthInput.value = originalImage.width;
+                        heightSlider.value = originalImage.height;
+                        heightInput.value = originalImage.height;
+                    };
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Sync sliders and inputs
+        widthSlider.addEventListener('input', () => widthInput.value = widthSlider.value);
+        heightSlider.addEventListener('input', () => heightInput.value = heightSlider.value);
+        widthInput.addEventListener('input', () => widthSlider.value = widthInput.value);
+        heightInput.addEventListener('input', () => heightSlider.value = heightInput.value);
+
+        // Resize function
+        resizeBtn.addEventListener('click', () => {
+            const canvas = document.createElement('canvas');
+            canvas.width = widthInput.value;
+            canvas.height = heightInput.value;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
+            imagePreview.src = canvas.toDataURL('image/jpeg');
+        });
+
+        // Download function
+        downloadBtn.addEventListener('click', () => {
+            const link = document.createElement('a');
+            link.download = 'resized-image.jpg';
+            link.href = imagePreview.src;
+            link.click();
+        });
+    </script>
+</body>
+</html>

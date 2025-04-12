@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Cropper</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+        body {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+        }
+        h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        .upload-area {
+            border: 2px dashed #ccc;
+            padding: 30px;
+            text-align: center;
+            margin-bottom: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+        .upload-area:hover {
+            border-color: #4a6bff;
+        }
+        #imagePreview {
+            max-width: 100%;
+            margin-top: 20px;
+            display: none;
+        }
+        .cropper-container {
+            margin: 20px 0;
+        }
+        button {
+            background: #4a6bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 10px;
+            margin-right: 10px;
+        }
+        button:hover {
+            background: #3a5bef;
+        }
+        a.back-btn {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4a6bff;
+            text-decoration: none;
+        }
+        a.back-btn:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1><i class="fas fa-crop"></i> Image Cropper</h1>
+        <div class="upload-area" id="uploadArea">
+            <p>Drag & Drop your image here or click to browse</p>
+            <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        </div>
+        <div class="cropper-container" id="cropperContainer" style="display: none;">
+            <img id="imagePreview" alt="Preview">
+        </div>
+        <div id="controls" style="display: none;">
+            <button id="cropBtn">Crop Image</button>
+            <button id="downloadBtn">Download</button>
+        </div>
+        <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <!-- Cropper.js Library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
+    <script>
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const imagePreview = document.getElementById('imagePreview');
+        const cropperContainer = document.getElementById('cropperContainer');
+        const controls = document.getElementById('controls');
+        const cropBtn = document.getElementById('cropBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+
+        let cropper;
+
+        // Upload image
+        uploadArea.addEventListener('click', () => fileInput.click());
+        fileInput.addEventListener('change', (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    imagePreview.src = event.target.result;
+                    imagePreview.style.display = 'block';
+                    cropperContainer.style.display = 'block';
+                    controls.style.display = 'block';
+
+                    // Initialize Cropper.js
+                    if (cropper) cropper.destroy();
+                    cropper = new Cropper(imagePreview, {
+                        aspectRatio: 1, // Set aspect ratio (1:1 for square)
+                        viewMode: 1,
+                        autoCropArea: 0.8,
+                    });
+                };
+                reader.readAsDataURL(file);
+            }
+        });
+
+        // Crop and preview
+        cropBtn.addEventListener('click', () => {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            if (croppedCanvas) {
+                imagePreview.src = croppedCanvas.toDataURL('image/jpeg');
+                cropper.destroy(); // Stop cropper after crop
+            }
+        });
+
+        // Download cropped image
+        downloadBtn.addEventListener('click', () => {
+            const croppedCanvas = cropper.getCroppedCanvas();
+            if (croppedCanvas) {
+                const link = document.createElement('a');
+                link.download = 'cropped-image.jpg';
+                link.href = croppedCanvas.toDataURL('image/jpeg');
+                link.click();
+            }
+        });
+    </script>
+</body>
+</html>
