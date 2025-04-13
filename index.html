@@ -1,245 +1,311 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>ImageMagic - Professional Image Tools</title>
-  <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/1829/1829586.png" type="image/png">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --primary: #4361ee;
-      --secondary: #3f37c9;
-      --accent: #4895ef;
-      --light-bg: #f5f5f5;
-      --light-text: #212529;
-      --dark-bg: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      --dark-text: white;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ImageMagic - Professional Image Tools</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --text: #212529;
+            --bg: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --tagline: rgba(0, 0, 0, 0.7);
+            --title-line: var(--accent);
+            --icon-gradient: linear-gradient(45deg, var(--accent), var(--primary));
+            --bg-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
 
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-      font-family: 'Poppins', sans-serif;
-    }
+        [data-theme="dark"] {
+            --text: white;
+            --bg: #121212;
+            --card-bg: rgba(30, 30, 30, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --tagline: rgba(255, 255, 255, 0.7);
+            --title-line: var(--accent);
+            --icon-gradient: linear-gradient(45deg, var(--accent), var(--primary));
+            --bg-image: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s ease, color 0.2s ease;
+        }
+        
+        body {
+            background: var(--bg-image);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            padding: 20px;
+        }
+        
+        h1 {
+            margin-bottom: 40px;
+            color: var(--text);
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px var(--shadow);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--title-line);
+            border-radius: 2px;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            perspective: 1000px;
+        }
+        
+        .btn {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px 20px;
+            box-shadow: 0 15px 35px var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid var(--card-border);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-10px) scale(1.03) rotateX(5deg);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+        
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .btn i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+        
+        .btn h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .btn p {
+            color: var(--tagline);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .tagline {
+            color: var(--tagline);
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
 
-    body {
-      min-height: 100vh;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      position: relative;
-      background-image: url('https://images.unsplash.com/photo-1635070041078-e363dbe005cb?q=80&w=2070&auto=format&fit=crop');
-      background-size: cover;
-      background-position: center;
-      background-attachment: fixed;
-      transition: all 0.4s ease;
-    }
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 100;
+        }
 
-    body::before {
-      content: '';
-      position: absolute;
-      top: 0; left: 0;
-      width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      z-index: -1;
-      transition: background 0.4s ease;
-    }
+        .theme-toggle i {
+            font-size: 1.3rem;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                padding: 30px 15px;
+            }
+            
+            .btn i {
+                font-size: 50px;
+            }
 
-    html[data-theme="light"] body {
-      background-color: var(--light-bg);
-      background-image: none;
-    }
-
-    html[data-theme="light"] body::before {
-      background: rgba(255, 255, 255, 0.8);
-    }
-
-    .theme-toggle {
-      position: absolute;
-      top: 20px;
-      right: 30px;
-      font-size: 1.5rem;
-      color: white;
-      cursor: pointer;
-      z-index: 1000;
-      transition: transform 0.3s;
-    }
-
-    .theme-toggle:hover {
-      transform: scale(1.2);
-    }
-
-    .container {
-      max-width: 1200px;
-      width: 100%;
-      text-align: center;
-      animation: fadeIn 0.8s ease-out;
-    }
-
-    h1 {
-      color: var(--dark-text);
-      margin-bottom: 20px;
-      font-size: 3rem;
-      font-weight: 700;
-      text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-      position: relative;
-      display: inline-block;
-    }
-
-    html[data-theme="light"] h1 {
-      color: var(--light-text);
-      text-shadow: none;
-    }
-
-    h1::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100px;
-      height: 4px;
-      background: var(--accent);
-      border-radius: 2px;
-    }
-
-    .tagline {
-      color: rgba(255, 255, 255, 0.8);
-      margin-bottom: 40px;
-      font-size: 1.2rem;
-      font-weight: 300;
-    }
-
-    html[data-theme="light"] .tagline {
-      color: var(--light-text);
-    }
-
-    .buttons {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-      gap: 30px;
-    }
-
-    .btn {
-      background: rgba(255, 255, 255, 0.1);
-      backdrop-filter: blur(10px);
-      border-radius: 15px;
-      padding: 40px 20px;
-      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-      transition: all 0.4s ease;
-      text-decoration: none;
-      color: white;
-      border: 1px solid rgba(255, 255, 255, 0.2);
-    }
-
-    .btn:hover {
-      transform: translateY(-10px) scale(1.03);
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    html[data-theme="light"] .btn {
-      background: white;
-      color: var(--light-text);
-      border: 1px solid #ddd;
-    }
-
-    .btn i {
-      font-size: 60px;
-      margin-bottom: 20px;
-      background: linear-gradient(45deg, var(--accent), var(--primary));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-    }
-
-    .btn h2 {
-      margin-bottom: 10px;
-      font-size: 1.5rem;
-    }
-
-    .btn p {
-      font-size: 0.95rem;
-    }
-
-    @keyframes fadeIn {
-      from { opacity: 0; transform: translateY(20px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    @media (max-width: 768px) {
-      h1 { font-size: 2rem; }
-      .btn i { font-size: 50px; }
-    }
-  </style>
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                top: 15px;
+                right: 15px;
+            }
+        }
+    </style>
 </head>
 <body>
-  <!-- Theme Toggle Button (Moon/Sun) -->
-  <div class="theme-toggle" onclick="toggleTheme()">
-    <i id="themeIcon" class="fas fa-moon"></i>
-  </div>
-
-  <div class="container">
-    <h1>ImageMagic Pro</h1>
-    <p class="tagline">Professional-grade image editing tools at your fingertips</p>
-
-    <div class="buttons">
-      <a href="resizer.html" class="btn">
-        <i class="fas fa-expand-alt"></i>
-        <h2>Image Resizer</h2>
-        <p>Resize your images to any dimension while maintaining quality</p>
-      </a>
-      <a href="cropper.html" class="btn">
-        <i class="fas fa-crop-alt"></i>
-        <h2>Image Cropper</h2>
-        <p>Precisely crop images to focus on what matters most</p>
-      </a>
-      <a href="com.html" class="btn">
-        <i class="fas fa-file-export"></i>
-        <h2>Image Compressor</h2>
-        <p>Reduce file size without noticeable quality loss</p>
-      </a>
-      <a href="bgremover.html" class="btn">
-        <i class="fas fa-magic"></i>
-        <h2>Background Remover</h2>
-        <p>Instantly remove backgrounds with AI-powered precision</p>
-      </a>
-      <a href="rotator.html" class="btn">
-        <i class="fas fa-retweet"></i>
-        <h2>Image Rotator</h2>
-        <p>Rotate and flip images in any direction</p>
-      </a>
-      <a href="colorpicker.html" class="btn">
-        <i class="fas fa-palette"></i>
-        <h2>Color Picker</h2>
-        <p>Extract color codes from any point in your image</p>
-      </a>
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon" id="themeIcon"></i>
     </div>
-  </div>
 
-  <script>
-    function toggleTheme() {
-      const html = document.documentElement;
-      const icon = document.getElementById('themeIcon');
-      const isDark = html.getAttribute('data-theme') === 'dark';
+    <div class="container">
+        <h1>ImageMagic Pro</h1>
+        <p class="tagline">Professional-grade image editing tools at your fingertips</p>
+        
+        <div class="buttons">
+            <a href="resizer.html" class="btn">
+                <i class="fas fa-expand-alt"></i>
+                <h2>Image Resizer</h2>
+                <p>Resize your images to any dimension while maintaining quality</p>
+            </a>
+            <a href="cropper.html" class="btn">
+                <i class="fas fa-crop-alt"></i>
+                <h2>Image Cropper</h2>
+                <p>Precisely crop images to focus on what matters most</p>
+            </a>
+            <a href="com.html" class="btn">
+                <i class="fas fa-file-export"></i>
+                <h2>Image Compressor</h2>
+                <p>Reduce file size without noticeable quality loss</p>
+            </a>
+            <a href="bgremover.html" class="btn">
+                <i class="fas fa-magic"></i>
+                <h2>Background Remover</h2>
+                <p>Instantly remove backgrounds with AI-powered precision</p>
+            </a>
+            <a href="rotator.html" class="btn">
+                <i class="fas fa-retweet"></i>
+                <h2>Image Rotator</h2>
+                <p>Rotate and flip images in any direction</p>
+            </a>
+            <a href="colorpicker.html" class="btn">
+                <i class="fas fa-palette"></i>
+                <h2>Color Picker</h2>
+                <p>Extract color codes from any point in your image</p>
+            </a>
+            <a href="sticker.html" class="btn">
+                <i class="fas fa-sticky-note"></i>
+                <h2>Sticker Adder</h2>
+                <p>Add fun stickers and emojis to your images</p>
+            </a>
+        </div>
+    </div>
 
-      // Toggle theme
-      html.setAttribute('data-theme', isDark ? 'light' : 'dark');
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
 
-      // Toggle icon and color
-      if (isDark) {
-        icon.classList.remove('fa-moon');
-        icon.classList.add('fa-sun');
-        icon.style.color = '#f7c948'; // Bright yellow for sun icon
-      } else {
-        icon.classList.remove('fa-sun');
-        icon.classList.add('fa-moon');
-        icon.style.color = '#ffffff'; // White for moon icon
-      }
-    }
-  </script>
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the saved theme
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // Watch for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) { // Only if user hasn't set preference
+                const newTheme = e.matches ? 'dark' : 'light';
+                html.setAttribute('data-theme', newTheme);
+                updateIcon(newTheme);
+            }
+        });
+    </script>
+
+    <!-- Poppins font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </body>
 </html>
