@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sticker & Frame Adder</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #4895ef;
+            --bg: #f8f9fa;
+            --text: #212529;
+            --card-bg: white;
+            --card-border: rgba(0, 0, 0, 0.1);
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            margin-bottom: 20px;
+            color: var(--primary);
+        }
+
+        .upload-area {
+            border: 2px dashed var(--primary);
+            border-radius: 10px;
+            text-align: center;
+            padding: 20px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .upload-area:hover {
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .canvas-container {
+            position: relative;
+            display: none;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        #stickerCanvas {
+            width: 100%;
+            border: 1px solid var(--card-border);
+            border-radius: 10px;
+        }
+
+        .section-title {
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 1.2rem;
+            color: var(--primary);
+            text-align: center;
+        }
+
+        .sticker-palette,
+        .frame-palette {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .sticker,
+        .frame {
+            font-size: 24px;
+            text-align: center;
+            cursor: pointer;
+            padding: 10px;
+            background: #f1f1f1;
+            border-radius: 5px;
+            transition: transform 0.2s;
+        }
+
+        .sticker:hover,
+        .frame:hover {
+            transform: scale(1.2);
+            background: rgba(67, 97, 238, 0.1);
+        }
+
+        .frame img {
+            width: 100%;
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .draggable-sticker {
+            position: absolute;
+            cursor: move;
+            user-select: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .resize-handle {
+            position: absolute;
+            bottom: -10px;
+            right: -10px;
+            width: 15px;
+            height: 15px;
+            background: var(--primary);
+            border-radius: 50%;
+            cursor: nwse-resize;
+        }
+
+        button {
+            margin: 10px 5px;
+            padding: 10px 20px;
+            background: var(--primary);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background: var(--secondary);
+        }
+    </style>
+</head>
+<body>
+<div class="container">
+    <h1>Sticker & Frame Adder</h1>
+
+    <div id="uploadArea" class="upload-area">
+        <p>Click to upload an image or drag & drop here</p>
+        <input id="fileInput" type="file" accept="image/*" style="display: none;">
+    </div>
+
+    <div id="canvasContainer" class="canvas-container">
+        <canvas id="stickerCanvas"></canvas>
+    </div>
+
+    <h3 class="section-title">Choose a Sticker</h3>
+    <div id="stickerPalette" class="sticker-palette"></div>
+
+    <h3 class="section-title">Add Your Own Sticker</h3>
+    <div class="upload-area" id="customStickerUploadArea">
+        <p>Click to upload a sticker</p>
+        <input id="customStickerInput" type="file" accept="image/*" style="display: none;">
+    </div>
+
+    <h3 class="section-title">Choose a Frame</h3>
+    <div id="framePalette" class="frame-palette"></div>
+
+    <button id="addTextBtn">Add Text</button>
+    <button id="saveBtn">Save Image</button>
+    <button id="clearBtn">Clear Stickers</button>
+    <button onclick="window.location.href='index.html'">Go to Home</button>
+</div>
+
+<script>
+    const uploadArea = document.getElementById('uploadArea');
+    const fileInput = document.getElementById('fileInput');
+    const customStickerUploadArea = document.getElementById('customStickerUploadArea');
+    const customStickerInput = document.getElementById('customStickerInput');
+    const canvasContainer = document.getElementById('canvasContainer');
+    const stickerCanvas = document.getElementById('stickerCanvas');
+    const stickerPalette = document.getElementById('stickerPalette');
+    const framePalette = document.getElementById('framePalette');
+    const saveBtn = document.getElementById('saveBtn');
+    const clearBtn = document.getElementById('clearBtn');
+    const addTextBtn = document.getElementById('addTextBtn');
+
+    let ctx, img, selectedFrame = null;
+
+    stickerCanvas.width = 800;
+    stickerCanvas.height = 600;
+    ctx = stickerCanvas.getContext('2d');
+
+    uploadArea.addEventListener('click', () => fileInput.click());
+    fileInput.addEventListener('change', handleFile);
+
+    function handleFile(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                img = new Image();
+                img.onload = function () {
+                    stickerCanvas.width = img.width;
+                    stickerCanvas.height = img.height;
+                    drawCanvas();
+                    canvasContainer.style.display = 'block';
+                };
+                img.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function drawCanvas() {
+        ctx.clearRect(0, 0, stickerCanvas.width, stickerCanvas.height);
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        if (selectedFrame) {
+            if (selectedFrame.type === "color") {
+                ctx.lineWidth = 20;
+                ctx.strokeStyle = selectedFrame.value;
+                ctx.strokeRect(10, 10, stickerCanvas.width - 20, stickerCanvas.height - 20);
+            } else if (selectedFrame.type === "wood") {
+                const frameImage = new Image();
+                frameImage.onload = () => {
+                    ctx.drawImage(frameImage, 0, 0, stickerCanvas.width, stickerCanvas.height);
+                };
+                frameImage.src = selectedFrame.value;
+            }
+        }
+    }
+
+    const stickerEmojis = ["😀", "😃", "😄", "😁", "😆", "😅", "😂", "🤣", "😊", "😇", "🙂", "🙃", "😉", "😌", "😍", "🥰", "😘", "😗", "😙", "😚"];
+    stickerEmojis.forEach(sticker => {
+        const stickerDiv = document.createElement('div');
+        stickerDiv.classList.add('sticker');
+        stickerDiv.textContent = sticker;
+        stickerDiv.addEventListener('click', () => addSticker(null, sticker));
+        stickerPalette.appendChild(stickerDiv);
+    });
+
+    customStickerUploadArea.addEventListener('click', () => customStickerInput.click());
+    customStickerInput.addEventListener('change', handleCustomSticker);
+
+    function handleCustomSticker(event) {
+        const file = event.target.files[0];
+        if (file && file.type.startsWith('image/')) {
+            const reader = new FileReader();
+            reader.onload = function (e) {
+                const customStickerImg = new Image();
+                customStickerImg.onload = function () {
+                    addSticker(customStickerImg);
+                };
+                customStickerImg.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    }
+
+    function addSticker(image, emoji = null) {
+        const stickerDiv = document.createElement('div');
+        stickerDiv.classList.add('draggable-sticker');
+        stickerDiv.style.left = '50%';
+        stickerDiv.style.top = '50%';
+        stickerDiv.style.transform = 'translate(-50%, -50%)';
+
+        if (image) {
+            stickerDiv.style.width = '100px';
+            stickerDiv.style.height = '100px';
+            stickerDiv.style.backgroundImage = `url(${image.src})`;
+            stickerDiv.style.backgroundSize = 'contain';
+            stickerDiv.style.backgroundRepeat = 'no-repeat';
+            stickerDiv.style.backgroundPosition = 'center';
+        } else if (emoji) {
+            stickerDiv.textContent = emoji;
+            stickerDiv.style.fontSize = '40px';
+        }
+
+        const resizeHandle = document.createElement('div');
+        resizeHandle.classList.add('resize-handle');
+        stickerDiv.appendChild(resizeHandle);
+
+        canvasContainer.appendChild(stickerDiv);
+
+        addDragAndResize(stickerDiv, emoji);
+    }
+
+    function addDragAndResize(stickerDiv, isEmoji) {
+        let isDragging = false;
+        let offsetX, offsetY;
+
+        stickerDiv.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('resize-handle')) return;
+            isDragging = true;
+            const rect = stickerDiv.getBoundingClientRect();
+            offsetX = e.clientX - rect.left;
+            offsetY = e.clientY - rect.top;
+
+            document.addEventListener('mousemove', onDrag);
+            document.addEventListener('mouseup', stopDrag);
+        });
+
+        function onDrag(e) {
+            if (!isDragging) return;
+            const containerRect = canvasContainer.getBoundingClientRect();
+            const newLeft = e.clientX - containerRect.left - offsetX;
+            const newTop = e.clientY - containerRect.top - offsetY;
+            stickerDiv.style.left = `${newLeft}px`;
+            stickerDiv.style.top = `${newTop}px`;
+        }
+
+        function stopDrag() {
+            isDragging = false;
+            document.removeEventListener('mousemove', onDrag);
+            document.removeEventListener('mouseup', stopDrag);
+        }
+
+        const resizeHandle = stickerDiv.querySelector('.resize-handle');
+        let isResizing = false;
+        let initialSize, initialMouseX, initialMouseY;
+
+        resizeHandle.addEventListener('mousedown', (e) => {
+            isResizing = true;
+            initialSize = isEmoji ? parseInt(stickerDiv.style.fontSize) : stickerDiv.offsetWidth;
+            initialMouseX = e.clientX;
+            initialMouseY = e.clientY;
+
+            document.addEventListener('mousemove', onResize);
+            document.addEventListener('mouseup', stopResize);
+        });
+
+        function onResize(e) {
+            if (!isResizing) return;
+            const diff = Math.max(e.clientX - initialMouseX, e.clientY - initialMouseY);
+            if (isEmoji) {
+                stickerDiv.style.fontSize = `${initialSize + diff / 5}px`;
+            } else {
+                stickerDiv.style.width = `${initialSize + diff}px`;
+                stickerDiv.style.height = `${initialSize + diff}px`;
+            }
+        }
+
+        function stopResize() {
+            isResizing = false;
+            document.removeEventListener('mousemove', onResize);
+            document.removeEventListener('mouseup', stopResize);
+        }
+    }
+
+    addTextBtn.addEventListener('click', () => {
+        const text = prompt("Enter your text:");
+        if (text) {
+            const textDiv = document.createElement('div');
+            textDiv.classList.add('draggable-sticker');
+            textDiv.textContent = text;
+            textDiv.style.fontSize = '40px';
+            textDiv.style.left = '50%';
+            textDiv.style.top = '50%';
+            textDiv.style.transform = 'translate(-50%, -50%)';
+
+            const resizeHandle = document.createElement('div');
+            resizeHandle.classList.add('resize-handle');
+            textDiv.appendChild(resizeHandle);
+
+            canvasContainer.appendChild(textDiv);
+
+            addDragAndResize(textDiv, true);
+        }
+    });
+
+    const frames = [
+        { type: "color", value: "#FF0000" },
+        { type: "color", value: "#00FF00" },
+        { type: "color", value: "#0000FF" },
+        { type: "wood", value: "https://i.imgur.com/RJq5oY7.png" }
+    ];
+
+    frames.forEach(frame => {
+        const frameDiv = document.createElement('div');
+        frameDiv.classList.add('frame');
+        if (frame.type === "color") {
+            frameDiv.style.backgroundColor = frame.value;
+        } else if (frame.type === "wood") {
+            const img = document.createElement('img');
+            img.src = frame.value;
+            frameDiv.appendChild(img);
+        }
+        frameDiv.addEventListener('click', () => {
+            selectedFrame = frame;
+            drawCanvas();
+        });
+        framePalette.appendChild(frameDiv);
+    });
+
+    saveBtn.addEventListener('click', () => {
+        const stickers = document.querySelectorAll('.draggable-sticker');
+        drawCanvas();
+        stickers.forEach(sticker => {
+            const rect = sticker.getBoundingClientRect();
+            const containerRect = canvasContainer.getBoundingClientRect();
+            const x = rect.left - containerRect.left;
+            const y = rect.top - containerRect.top;
+            const width = sticker.offsetWidth;
+            const height = sticker.offsetHeight;
+
+            if (sticker.style.backgroundImage) {
+                const stickerImg = new Image();
+                stickerImg.src = sticker.style.backgroundImage.slice(5, -2);
+                ctx.drawImage(stickerImg, x, y, width, height);
+            } else {
+                const fontSize = parseInt(sticker.style.fontSize);
+                ctx.font = `${fontSize}px Arial`;
+                ctx.fillText(sticker.textContent, x, y + fontSize);
+            }
+        });
+
+        const link = document.createElement('a');
+        link.download = 'sticker-image.png';
+        link.href = stickerCanvas.toDataURL();
+        link.click();
+    });
+
+    clearBtn.addEventListener('click', () => {
+        const stickers = document.querySelectorAll('.draggable-sticker');
+        stickers.forEach(sticker => sticker.remove());
+    });
+</script>
+</body>
+</html>
