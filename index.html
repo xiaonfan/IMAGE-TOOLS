@@ -45,6 +45,7 @@
             background: var(--bg-image);
             min-height: 100vh;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             padding: 20px;
@@ -185,6 +186,32 @@
             background-clip: text;
             color: transparent;
         }
+
+        /* Styling for the Car Game Image */
+        .car-game {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .car-game img {
+            width: 300px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px var(--shadow);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .car-game img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px var(--shadow);
+        }
+
+        .car-game p {
+            margin-top: 10px;
+            color: var(--text);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
         
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
@@ -209,6 +236,10 @@
                 height: 40px;
                 top: 15px;
                 right: 15px;
+            }
+
+            .car-game img {
+                width: 250px;
             }
         }
     </style>
@@ -258,6 +289,14 @@
                 <h2>Sticker Adder</h2>
                 <p>Add fun stickers and emojis to your images</p>
             </a>
+        </div>
+
+        <!-- Car Game Section -->
+        <div class="car-game">
+            <a href="car.html">
+                <img src="https://play-lh.googleusercontent.com/nubEn3WHBWWDWNR9SjhtF56RCg_-kZNlKmnbI8XrcFlTEeUT8E-G0otXxkBlP7GQoOM=s96-rw" alt="Car Game Thumbnail">
+            </a>
+            <p>Car Game - Click to Play!</p>
         </div>
     </div>
 
