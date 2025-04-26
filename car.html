@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Car Game</title>
   <style>
     * {
@@ -80,7 +80,8 @@
       transform: translateX(-50%);
       z-index: 1000;
       display: flex;
-      gap: 40px;
+      flex-direction: row;
+      gap: 50px;
     }
 
     .mobile-controls button {
@@ -92,20 +93,6 @@
       color: white;
       box-shadow: 0 4px 8px rgba(0,0,0,0.3);
     }
-
-    #flyBtn {
-      position: fixed;
-      top: 80px;
-      right: 30px;
-      z-index: 1001;
-      padding: 10px 20px;
-      font-size: 1.2em;
-      border-radius: 10px;
-      background-color: gold;
-      color: black;
-      border: none;
-      box-shadow: 0 0 10px rgba(0,0,0,0.5);
-    }
   </style>
 </head>
 <body>
@@ -116,23 +103,19 @@
 
   <!-- Mobile Controls -->
   <div class="mobile-controls">
+    <button id="upBtn">⬆️</button>
     <button id="leftBtn">⬅️</button>
     <button id="rightBtn">➡️</button>
+    <button id="downBtn">⬇️</button>
   </div>
-
-  <!-- Flying Mode Button -->
-  <button id="flyBtn" class="hide">🚀 Flying Mode</button>
 
   <script>
     const score = document.querySelector(".score");
     const startScreen = document.querySelector(".startScreen");
     const gameArea = document.querySelector(".gameArea");
-    const flyBtn = document.getElementById("flyBtn");
 
     let player = { speed: 3, score: 0 };
     let keys = { ArrowUp: false, ArrowDown: false, ArrowRight: false, ArrowLeft: false };
-    let invincible = false;
-    let nextPowerUpScore = 1000;
 
     startScreen.addEventListener("click", start);
     document.addEventListener("keydown", pressOn);
@@ -164,7 +147,7 @@
     function moveEnemy(car) {
       let ele = document.querySelectorAll(".enemy");
       ele.forEach(function (item) {
-        if (!invincible && isCollide(car, item)) {
+        if (isCollide(car, item)) {
           endGame();
         }
         if (item.y >= 800) {
@@ -202,10 +185,6 @@
         window.requestAnimationFrame(playGame);
         player.score++;
         score.innerText = "Score : " + player.score;
-
-        if (player.score >= nextPowerUpScore) {
-          flyBtn.classList.remove("hide");
-        }
       }
     }
 
@@ -231,9 +210,6 @@
       gameArea.innerHTML = "";
       player.start = true;
       player.score = 0;
-      nextPowerUpScore = 1000;
-      invincible = false;
-      flyBtn.classList.add("hide");
 
       for (let x = 0; x < 10; x++) {
         let div = document.createElement("div");
@@ -272,28 +248,23 @@
       return "#" + c() + c() + c();
     }
 
-    // Flying Button Logic
-    flyBtn.addEventListener("click", () => {
-      invincible = true;
-      flyBtn.classList.add("hide");
-      const car = document.querySelector(".car");
-      car.style.filter = "drop-shadow(0 0 15px cyan)";
-      setTimeout(() => {
-        invincible = false;
-        car.style.filter = "none";
-        nextPowerUpScore += 1000;
-      }, 5000);
-    });
-
     // Mobile Controls
     const leftBtn = document.getElementById("leftBtn");
     const rightBtn = document.getElementById("rightBtn");
+    const upBtn = document.getElementById("upBtn");
+    const downBtn = document.getElementById("downBtn");
 
     leftBtn.addEventListener("touchstart", () => keys.ArrowLeft = true);
     leftBtn.addEventListener("touchend", () => keys.ArrowLeft = false);
 
     rightBtn.addEventListener("touchstart", () => keys.ArrowRight = true);
     rightBtn.addEventListener("touchend", () => keys.ArrowRight = false);
+
+    upBtn.addEventListener("touchstart", () => keys.ArrowUp = true);
+    upBtn.addEventListener("touchend", () => keys.ArrowUp = false);
+
+    downBtn.addEventListener("touchstart", () => keys.ArrowDown = true);
+    downBtn.addEventListener("touchend", () => keys.ArrowDown = false);
   </script>
 </body>
 </html>
