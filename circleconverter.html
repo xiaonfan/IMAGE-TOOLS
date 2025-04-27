@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Picture to Circle Converter | ImageMagic Pro</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --text: #212529;
+            --bg: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --tagline: rgba(0, 0, 0, 0.7);
+            --title-line: var(--accent);
+            --icon-gradient: linear-gradient(45deg, var(--accent), var(--primary));
+            --bg-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        [data-theme="dark"] {
+            --text: white;
+            --bg: #121212;
+            --card-bg: rgba(30, 30, 30, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --tagline: rgba(255, 255, 255, 0.7);
+            --title-line: var(--accent);
+            --icon-gradient: linear-gradient(45deg, var(--accent), var(--primary));
+            --bg-image: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s ease, color 0.2s ease;
+        }
+        
+        body {
+            background: var(--bg-image);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: var(--text);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+        
+        .container {
+            max-width: 1000px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            padding: 20px;
+        }
+        
+        h1 {
+            margin-bottom: 20px;
+            color: var(--text);
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px var(--shadow);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--title-line);
+            border-radius: 2px;
+        }
+        
+        .converter-container {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 15px 35px var(--shadow);
+            margin: 30px 0;
+            border: 1px solid var(--card-border);
+        }
+        
+        .upload-area {
+            border: 2px dashed var(--accent);
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-area:hover {
+            background: rgba(72, 149, 239, 0.1);
+        }
+        
+        .upload-area i {
+            font-size: 60px;
+            margin-bottom: 15px;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .preview-area {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .image-box {
+            flex: 1;
+            min-width: 300px;
+            text-align: center;
+        }
+        
+        .image-box h3 {
+            margin-bottom: 15px;
+            color: var(--text);
+        }
+        
+        .image-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .circle-preview {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px var(--shadow);
+        }
+        
+        .controls {
+            margin: 30px 0;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 10px var(--shadow);
+        }
+        
+        button:hover {
+            background: var(--secondary);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 15px var(--shadow);
+        }
+        
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .download-btn {
+            background: #4CAF50;
+        }
+        
+        .download-btn:hover {
+            background: #3e8e41;
+        }
+        
+        .back-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 100;
+        }
+        
+        .back-btn i {
+            font-size: 1.3rem;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 100;
+        }
+
+        .theme-toggle i {
+            font-size: 1.3rem;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            .converter-container {
+                padding: 20px;
+            }
+            
+            .upload-area {
+                padding: 30px 20px;
+            }
+            
+            .preview-area {
+                flex-direction: column;
+            }
+            
+            .image-box {
+                min-width: 100%;
+            }
+            
+            .back-btn, .theme-toggle {
+                width: 40px;
+                height: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <a href="index.html" class="back-btn">
+        <i class="fas fa-arrow-left"></i>
+    </a>
+
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </div>
+
+    <div class="container">
+        <h1>Picture to Circle Converter</h1>
+        <p class="tagline">Convert any image to a perfect circle with transparent background</p>
+        
+        <div class="converter-container">
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h2>Upload Your Image</h2>
+                <p>Drag & drop your image here or click to browse</p>
+                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+            </div>
+            
+            <div class="preview-area" id="previewArea" style="display: none;">
+                <div class="image-box">
+                    <h3>Original Image</h3>
+                    <img id="originalPreview" class="image-preview" src="" alt="Original Image Preview">
+                </div>
+                <div class="image-box">
+                    <h3>Circular Image</h3>
+                    <img id="circlePreview" class="circle-preview" src="" alt="Circular Image Preview">
+                </div>
+            </div>
+            
+            <div class="controls" id="controls" style="display: none;">
+                <button id="processBtn">Convert to Circle</button>
+                <button id="downloadBtn" class="download-btn" disabled>Download Circle Image</button>
+                <button id="resetBtn">Reset</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the saved theme
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // Image to Circle Converter Functionality
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const previewArea = document.getElementById('previewArea');
+        const controls = document.getElementById('controls');
+        const originalPreview = document.getElementById('originalPreview');
+        const circlePreview = document.getElementById('circlePreview');
+        const processBtn = document.getElementById('processBtn');
+        const downloadBtn = document.getElementById('downloadBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        
+        let originalImage = null;
+        let circleImage = null;
+
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = 'rgba(72, 149, 239, 0.2)';
+        });
+
+        uploadArea.addEventListener('dragleave', () => {
+            uploadArea.style.background = '';
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.background = '';
+            if (e.dataTransfer.files.length) {
+                fileInput.files = e.dataTransfer.files;
+                handleFileSelect(e.dataTransfer.files[0]);
+            }
+        });
+
+        // Handle click to browse
+        uploadArea.addEventListener('click', () => {
+            fileInput.click();
+        });
+
+        fileInput.addEventListener('change', () => {
+            if (fileInput.files.length) {
+                handleFileSelect(fileInput.files[0]);
+            }
+        });
+
+        // Process the selected image
+        function handleFileSelect(file) {
+            if (!file.type.match('image.*')) {
+                alert('Please select an image file.');
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                originalImage = new Image();
+                originalImage.onload = () => {
+                    originalPreview.src = e.target.result;
+                    previewArea.style.display = 'flex';
+                    controls.style.display = 'flex';
+                    uploadArea.style.display = 'none';
+                };
+                originalImage.src = e.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Convert image to circle
+        processBtn.addEventListener('click', () => {
+            if (!originalImage) return;
+
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            // Set canvas dimensions to the smallest dimension (to make perfect circle)
+            const size = Math.min(originalImage.width, originalImage.height);
+            canvas.width = size;
+            canvas.height = size;
+            
+            // Create circular clipping path
+            ctx.beginPath();
+            ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
+            ctx.closePath();
+            ctx.clip();
+            
+            // Draw the image centered
+            const offsetX = (originalImage.width - size) / 2;
+            const offsetY = (originalImage.height - size) / 2;
+            ctx.drawImage(originalImage, -offsetX, -offsetY, originalImage.width, originalImage.height);
+            
+            // Convert to image and display
+            circleImage = new Image();
+            circleImage.onload = () => {
+                circlePreview.src = canvas.toDataURL('image/png');
+                downloadBtn.disabled = false;
+            };
+            circleImage.src = canvas.toDataURL('image/png');
+        });
+
+        // Download the circular image
+        downloadBtn.addEventListener('click', () => {
+            if (!circleImage) return;
+            
+            const link = document.createElement('a');
+            link.download = 'circular-image.png';
+            link.href = circleImage.src;
+            link.click();
+        });
+
+        // Reset the converter
+        resetBtn.addEventListener('click', () => {
+            fileInput.value = '';
+            originalImage = null;
+            circleImage = null;
+            originalPreview.src = '';
+            circlePreview.src = '';
+            previewArea.style.display = 'none';
+            controls.style.display = 'none';
+            uploadArea.style.display = 'block';
+            downloadBtn.disabled = true;
+        });
+    </script>
+
+    <!-- Poppins font from Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</body>
+</html>
