@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +8,60 @@
     <link rel="icon" href="logo.png" type="image/png">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo img {
+            height: 40px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        .social-media {
+            display: flex;
+            gap: 15px;
+        }
+        
+        .social-media a {
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .social-media a:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Rest of your existing CSS */
         :root {
             --primary: #4361ee;
             --secondary: #3f37c9;
@@ -54,6 +109,7 @@
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
+            padding-top: 80px; /* Added to account for fixed header */
         }
         
         .container {
@@ -165,7 +221,7 @@
 
         .theme-toggle {
             position: fixed;
-            top: 20px;
+            top: 90px; /* Adjusted for header */
             right: 20px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -215,7 +271,7 @@
         
         .download-btn {
             position: fixed;
-            top: 20px;
+            top: 90px; /* Adjusted for header */
             left: 20px;
             background: var(--card-bg);
             border: 1px solid var(--card-border);
@@ -249,6 +305,16 @@
         }
         
         @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 15px;
+            }
+            
             h1 {
                 font-size: 2.2rem;
             }
@@ -264,7 +330,7 @@
             .theme-toggle {
                 width: 40px;
                 height: 40px;
-                top: 15px;
+                top: 85px;
                 right: 15px;
             }
 
@@ -275,11 +341,33 @@
             .download-btn {
                 padding: 8px 15px;
                 font-size: 0.9rem;
+                top: 85px;
             }
         }
     </style>
 </head>
 <body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="ImageMagic Logo">
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="index.html">Home</a></li>
+                <li><a href="about.html">About</a></li>
+                <li><a href="mailto:xiaonfan0@gmail.com">Contact</a></li>
+            </ul>
+        </nav>
+        
+        <div class="social-media">
+            <a href="https://www.youtube.com/@ADVERTISERENGLISH" target="_blank"><i class="fab fa-youtube"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+    </header>
+
     <script src="//code.tidio.co/ggnjw9duiopvv2ksz24qfadopolwcceu.js" async></script>
     
     <!-- Download Button - Fixed Top Left -->
