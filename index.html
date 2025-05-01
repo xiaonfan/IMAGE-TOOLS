@@ -188,7 +188,6 @@
             color: transparent;
         }
 
-        /* Styling for the Car Game Image */
         .car-game {
             margin-top: 50px;
             text-align: center;
@@ -212,6 +211,36 @@
             color: var(--text);
             font-size: 1.2rem;
             font-weight: 500;
+        }
+        
+        .download-btn {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .download-btn i {
+            font-size: 1rem;
         }
         
         @keyframes fadeIn {
@@ -242,11 +271,23 @@
             .car-game img {
                 width: 250px;
             }
+
+            .download-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
     <script src="//code.tidio.co/ggnjw9duiopvv2ksz24qfadopolwcceu.js" async></script>
+    
+    <!-- Download Button - Fixed Top Left -->
+    <a href="ImageMagic_Pro.apk" class="download-btn" download="ImageMagic_Pro.apk">
+        <i class="fas fa-download"></i>
+        <span>Download App</span>
+    </a>
+    
     <div class="theme-toggle" id="themeToggle">
         <i class="fas fa-moon" id="themeIcon"></i>
     </div>
@@ -298,7 +339,6 @@
             </a>
         </div>
 
-        <!-- Car Game Section -->
         <div class="car-game">
             <a href="car.html">
                 <img src="https://play-lh.googleusercontent.com/nubEn3WHBWWDWNR9SjhtF56RCg_-kZNlKmnbI8XrcFlTEeUT8E-G0otXxkBlP7GQoOM=s96-rw" alt="Car Game Thumbnail">
@@ -343,15 +383,29 @@
 
         // Watch for system theme changes
         window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
-            if (!localStorage.getItem('theme')) { // Only if user hasn't set preference
+            if (!localStorage.getItem('theme')) {
                 const newTheme = e.matches ? 'dark' : 'light';
                 html.setAttribute('data-theme', newTheme);
                 updateIcon(newTheme);
             }
         });
+
+        // Ensure the APK file exists (debugging helper)
+        document.querySelector('.download-btn').addEventListener('click', function(e) {
+            fetch('ImageMagic_Pro.apk')
+                .then(response => {
+                    if (!response.ok) {
+                        alert('APK file not found. Please ensure ImageMagic_Pro.apk exists in your project folder.');
+                        e.preventDefault();
+                    }
+                })
+                .catch(() => {
+                    alert('Failed to locate APK file. Check the filename and path.');
+                    e.preventDefault();
+                });
+        });
     </script>
 
-    <!-- Poppins font from Google Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </body>
 </html>
