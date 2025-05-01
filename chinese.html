@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="zh-CN" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>图像魔法 - 专业图像工具</title>
+    <link rel="icon" href="logo.png" type="image/png">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Header Styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 5%;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--card-border);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
+        }
+        
+        .logo img {
+            height: 40px;
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+            gap: 25px;
+            align-items: center;
+        }
+        
+        nav a {
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav a:hover {
+            color: var(--accent);
+        }
+        
+        .social-media {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+        
+        .social-media a {
+            color: var(--text);
+            font-size: 1.2rem;
+            transition: color 0.3s ease, transform 0.3s ease;
+        }
+        
+        .social-media a:hover {
+            color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        /* Language Selector Styles */
+        .language-selector {
+            position: relative;
+            margin-left: 15px;
+        }
+
+        .language-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .language-btn:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .language-btn i {
+            font-size: 0.9rem;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 10px 0;
+            min-width: 150px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .language-dropdown.show {
+            display: block;
+        }
+
+        .language-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text);
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .language-dropdown a:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        /* Rest of your existing CSS */
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
+            --text: #212529;
+            --bg: #f8f9fa;
+            --card-bg: rgba(255, 255, 255, 0.9);
+            --card-border: rgba(255, 255, 255, 0.3);
+            --shadow: rgba(0, 0, 0, 0.1);
+            --tagline: rgba(0, 0, 0, 0.7);
+            --title-line: var(--accent);
+            --icon-gradient: linear-gradient(45deg, var(--accent), var(--primary));
+            --bg-image: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+
+        [data-theme="dark"] {
+            --text: white;
+            --bg: #121212;
+            --card-bg: rgba(30, 30, 30, 0.8);
+            --card-border: rgba(255, 255, 255, 0.1);
+            --shadow: rgba(0, 0, 0, 0.3);
+            --tagline: rgba(255, 255, 255, 0.7);
+            --title-line: var(--accent);
+            --icon-gradient: linear-gradient(45deg, var(--accent), var(--primary));
+            --bg-image: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: background 0.3s ease, color 0.2s ease;
+        }
+        
+        body {
+            background: var(--bg-image);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            color: var(--text);
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+            padding-top: 80px; /* Added to account for fixed header */
+        }
+        
+        .container {
+            max-width: 1200px;
+            width: 100%;
+            text-align: center;
+            animation: fadeIn 0.8s ease-out;
+            padding: 20px;
+        }
+        
+        h1 {
+            margin-bottom: 40px;
+            color: var(--text);
+            font-size: 3rem;
+            font-weight: 700;
+            text-shadow: 0 2px 10px var(--shadow);
+            position: relative;
+            display: inline-block;
+        }
+        
+        h1::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 4px;
+            background: var(--title-line);
+            border-radius: 2px;
+        }
+        
+        .buttons {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            perspective: 1000px;
+        }
+        
+        .btn {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
+            padding: 40px 20px;
+            box-shadow: 0 15px 35px var(--shadow);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            color: var(--text);
+            border: 1px solid var(--card-border);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255,255,255,0.1), transparent);
+            transform: translateX(-100%);
+            transition: transform 0.6s ease;
+        }
+        
+        .btn:hover {
+            transform: translateY(-10px) scale(1.03) rotateX(5deg);
+            box-shadow: 0 20px 40px var(--shadow);
+        }
+        
+        .btn:hover::before {
+            transform: translateX(100%);
+        }
+        
+        .btn i {
+            font-size: 60px;
+            margin-bottom: 20px;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover i {
+            transform: scale(1.1);
+        }
+        
+        .btn h2 {
+            margin-bottom: 15px;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+        
+        .btn p {
+            color: var(--tagline);
+            font-size: 0.95rem;
+            line-height: 1.5;
+        }
+        
+        .tagline {
+            color: var(--tagline);
+            margin-bottom: 40px;
+            font-size: 1.2rem;
+            font-weight: 300;
+        }
+
+        .theme-toggle {
+            position: fixed;
+            top: 90px; /* Adjusted for header */
+            right: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 100;
+        }
+
+        .theme-toggle i {
+            font-size: 1.3rem;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        .car-game {
+            margin-top: 50px;
+            text-align: center;
+        }
+
+        .car-game img {
+            width: 300px;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px var(--shadow);
+            transition: transform 0.4s ease, box-shadow 0.4s ease;
+        }
+
+        .car-game img:hover {
+            transform: scale(1.05);
+            box-shadow: 0 15px 35px var(--shadow);
+        }
+
+        .car-game p {
+            margin-top: 10px;
+            color: var(--text);
+            font-size: 1.2rem;
+            font-weight: 500;
+        }
+        
+        .download-btn {
+            position: fixed;
+            top: 90px; /* Adjusted for header */
+            left: 20px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 10px 20px;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            color: var(--text);
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .download-btn:hover {
+            background: var(--primary);
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .download-btn i {
+            font-size: 1rem;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                padding: 15px;
+                gap: 15px;
+            }
+            
+            nav ul {
+                gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .social-media {
+                justify-content: center;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+            
+            .btn {
+                padding: 30px 15px;
+            }
+            
+            .btn i {
+                font-size: 50px;
+            }
+
+            .theme-toggle {
+                width: 40px;
+                height: 40px;
+                top: 85px;
+                right: 15px;
+            }
+
+            .car-game img {
+                width: 250px;
+            }
+
+            .download-btn {
+                padding: 8px 15px;
+                font-size: 0.9rem;
+                top: 85px;
+            }
+
+            .language-selector {
+                margin-left: 0;
+                margin-top: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header Section -->
+    <header>
+        <div class="logo">
+            <img src="logo.png" alt="图像魔法标志">
+        </div>
+        
+        <nav>
+            <ul>
+                <li><a href="index.html">首页</a></li>
+                <li><a href="about.html">关于我们</a></li>
+                <li><a href="mailto:xiaonfan0@gmail.com">联系我们</a></li>
+                <li>
+                    <div class="language-selector">
+                        <button class="language-btn">
+                            <i class="fas fa-globe"></i> 中文
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-dropdown" id="languageDropdown">
+                            <a href="index.html">英语</a>
+                            <a href="urdu.html">乌尔都语</a>
+                            <a href="german.html">德语</a>
+                            <a href="chinese.html">中文</a>
+                        </div>
+                    </div>
+                </li>
+            </ul>
+        </nav>
+        
+        <div class="social-media">
+            <a href="https://www.youtube.com/@ADVERTISERENGLISH" target="_blank"><i class="fab fa-youtube"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-twitter"></i></a>
+            <a href="#" target="_blank"><i class="fab fa-instagram"></i></a>
+        </div>
+    </header>
+
+    <script src="//code.tidio.co/ggnjw9duiopvv2ksz24qfadopolwcceu.js" async></script>
+    
+    <!-- Download Button - Fixed Top Left -->
+    <a href="ImageMagic_Pro.apk" class="download-btn" download="ImageMagic_Pro.apk">
+        <i class="fas fa-download"></i>
+        <span>下载应用</span>
+    </a>
+    
+    <div class="theme-toggle" id="themeToggle">
+        <i class="fas fa-moon" id="themeIcon"></i>
+    </div>
+
+    <div class="container">
+        <h1>图像魔法专业版</h1>
+        <p class="tagline">专业品质的图像编辑工具触手可及</p>
+        
+        <div class="buttons">
+            <a href="resizer.html" class="btn">
+                <i class="fas fa-expand-alt"></i>
+                <h2>调整图像大小</h2>
+                <p>在保持质量的同时将图像调整为任意大小</p>
+            </a>
+            <a href="cropper.html" class="btn">
+                <i class="fas fa-crop-alt"></i>
+                <h2>图像裁剪</h2>
+                <p>精确裁剪图像以聚焦于重要内容</p>
+            </a>
+            <a href="com.html" class="btn">
+                <i class="fas fa-file-export"></i>
+                <h2>图像压缩</h2>
+                <p>在不显著降低质量的情况下减小文件大小</p>
+            </a>
+            <a href="bgremover.html" class="btn">
+                <i class="fas fa-magic"></i>
+                <h2>背景移除</h2>
+                <p>使用人工智能快速移除背景</p>
+            </a>
+            <a href="rotator.html" class="btn">
+                <i class="fas fa-retweet"></i>
+                <h2>图像旋转</h2>
+                <p>将图像旋转或翻转到任意方向</p>
+            </a>
+            <a href="colorpicker.html" class="btn">
+                <i class="fas fa-palette"></i>
+                <h2>颜色选择</h2>
+                <p>从图像的任何点提取颜色代码</p>
+            </a>
+            <a href="sticker.html" class="btn">
+                <i class="fas fa-sticky-note"></i>
+                <h2>贴纸添加</h2>
+                <p>为您的图像添加有趣的贴纸和表情符号</p>
+            </a>
+            <a href="circleconverter.html" class="btn">
+                <i class="fas fa-circle-notch"></i>
+                <h2>方形转圆形</h2>
+                <p>将矩形图像转换为带有透明背景的完美圆形</p>
+            </a>
+        </div>
+
+        <div class="car-game">
+            <a href="car.html">
+                <img src="https://play-lh.googleusercontent.com/nubEn3WHBWWDWNR9SjhtF56RCg_-kZNlKmnbI8XrcFlTEeUT8E-G0otXxkBlP7GQoOM=s96-rw" alt="赛车游戏缩略图">
+            </a>
+            <p>赛车游戏 - 点击玩！</p>
+        </div>
+    </div>
+
+    <script>
+        // Theme Toggle Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const themeIcon = document.getElementById('themeIcon');
+        const html = document.documentElement;
+
+        // Check for saved theme preference or use preferred color scheme
+        const savedTheme = localStorage.getItem('theme') || 
+                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+        
+        // Apply the saved theme
+        html.setAttribute('data-theme', savedTheme);
+        updateIcon(savedTheme);
+
+        // Toggle theme on button click
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcon(newTheme);
+        });
+
+        function updateIcon(theme) {
+            if (theme === 'dark') {
+                themeIcon.classList.remove('fa-moon');
+                themeIcon.classList.add('fa-sun');
+            } else {
+                themeIcon.classList.remove('fa-sun');
+                themeIcon.classList.add('fa-moon');
+            }
+        }
+
+        // Watch for system theme changes
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', e => {
+            if (!localStorage.getItem('theme')) {
+                const newTheme = e.matches ? 'dark' : 'light';
+                html.setAttribute('data-theme', newTheme);
+                updateIcon(newTheme);
+            }
+        });
+
+        // Ensure the APK file exists (debugging helper)
+        document.querySelector('.download-btn').addEventListener('click', function(e) {
+            fetch('ImageMagic_Pro.apk')
+                .then(response => {
+                    if (!response.ok) {
+                        alert('未找到APK文件。请确保ImageMagic_Pro.apk存在于您的项目文件夹中。');
+                        e.preventDefault();
+                    }
+                })
+                .catch(() => {
+                    alert('无法找到APK文件。请检查文件名和路径。');
+                    e.preventDefault();
+                });
+        });
+
+        // Language Selector Functionality
+        const languageBtn = document.querySelector('.language-btn');
+        const languageDropdown = document.getElementById('languageDropdown');
+
+        // Toggle dropdown visibility
+        languageBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            languageDropdown.classList.remove('show');
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        languageDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</body>
+</html>
