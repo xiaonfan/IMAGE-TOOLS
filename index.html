@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,6 +31,7 @@
             display: flex;
             list-style: none;
             gap: 25px;
+            align-items: center;
         }
         
         nav a {
@@ -48,6 +48,7 @@
         .social-media {
             display: flex;
             gap: 15px;
+            align-items: center;
         }
         
         .social-media a {
@@ -59,6 +60,65 @@
         .social-media a:hover {
             color: var(--accent);
             transform: translateY(-2px);
+        }
+
+        /* Language Selector Styles */
+        .language-selector {
+            position: relative;
+            margin-left: 15px;
+        }
+
+        .language-btn {
+            background: transparent;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background 0.3s ease;
+        }
+
+        .language-btn:hover {
+            background: rgba(0,0,0,0.1);
+        }
+
+        .language-btn i {
+            font-size: 0.9rem;
+        }
+
+        .language-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            box-shadow: 0 5px 15px var(--shadow);
+            padding: 10px 0;
+            min-width: 150px;
+            display: none;
+            z-index: 1001;
+        }
+
+        .language-dropdown.show {
+            display: block;
+        }
+
+        .language-dropdown a {
+            display: block;
+            padding: 8px 15px;
+            color: var(--text);
+            text-decoration: none;
+            transition: background 0.2s ease;
+        }
+
+        .language-dropdown a:hover {
+            background: var(--primary);
+            color: white;
         }
 
         /* Rest of your existing CSS */
@@ -313,6 +373,12 @@
             
             nav ul {
                 gap: 15px;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            
+            .social-media {
+                justify-content: center;
             }
             
             h1 {
@@ -343,6 +409,11 @@
                 font-size: 0.9rem;
                 top: 85px;
             }
+
+            .language-selector {
+                margin-left: 0;
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
@@ -358,6 +429,21 @@
                 <li><a href="index.html">Home</a></li>
                 <li><a href="about.html">About</a></li>
                 <li><a href="mailto:xiaonfan0@gmail.com">Contact</a></li>
+                <li>
+                    <div class="language-selector">
+                        <button class="language-btn">
+                            <i class="fas fa-globe"></i> English
+                            <i class="fas fa-chevron-down"></i>
+                        </button>
+                        <div class="language-dropdown" id="languageDropdown">
+                            <a href="english.html">English</a>
+                            <a href="urdu.html">Urdu</a>
+                            <a href="german.html">German</a>
+                            <a href="chinese.html">Chinese</a>
+                            <!-- Add more languages as needed -->
+                        </div>
+                    </div>
+                </li>
             </ul>
         </nav>
         
@@ -491,6 +577,26 @@
                     alert('Failed to locate APK file. Check the filename and path.');
                     e.preventDefault();
                 });
+        });
+
+        // Language Selector Functionality
+        const languageBtn = document.querySelector('.language-btn');
+        const languageDropdown = document.getElementById('languageDropdown');
+
+        // Toggle dropdown visibility
+        languageBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            languageDropdown.classList.toggle('show');
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function() {
+            languageDropdown.classList.remove('show');
+        });
+
+        // Prevent dropdown from closing when clicking inside it
+        languageDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
         });
     </script>
 
