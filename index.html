@@ -21,6 +21,11 @@
             width: 100%;
             z-index: 1000;
             backdrop-filter: blur(10px);
+            transition: transform 0.3s ease;
+        }
+        
+        header.minimized {
+            transform: translateY(-80%);
         }
         
         .logo img {
@@ -121,6 +126,43 @@
             color: white;
         }
 
+        /* Header Toggle Button */
+        .header-toggle {
+            position: fixed;
+            top: 10px;
+            right: 80px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 1001;
+            transition: all 0.3s ease;
+        }
+
+        .header-toggle:hover {
+            background: var(--primary);
+            color: white;
+        }
+
+        .header-toggle i {
+            font-size: 1.2rem;
+            background: var(--icon-gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            transition: transform 0.3s ease;
+        }
+
+        .header-toggle.minimized i {
+            transform: rotate(180deg);
+        }
+
         /* Rest of your existing CSS */
         :root {
             --primary: #4361ee;
@@ -170,6 +212,11 @@
             background-position: center;
             background-attachment: fixed;
             padding-top: 80px; /* Added to account for fixed header */
+            transition: padding-top 0.3s ease;
+        }
+        
+        body.header-minimized {
+            padding-top: 20px;
         }
         
         .container {
@@ -414,6 +461,16 @@
                 margin-left: 0;
                 margin-top: 10px;
             }
+
+            .header-toggle {
+                right: 70px;
+                width: 35px;
+                height: 35px;
+            }
+
+            .header-toggle i {
+                font-size: 1rem;
+            }
         }
     </style>
 </head>
@@ -453,6 +510,11 @@
             <a href="https://www.instagram.com/xiaonfan0/" target="_blank"><i class="fab fa-instagram"></i></a>
         </div>
     </header>
+
+    <!-- Header Toggle Button -->
+    <div class="header-toggle" id="headerToggle">
+        <i class="fas fa-chevron-up"></i>
+    </div>
 
     <script src="//code.tidio.co/ggnjw9duiopvv2ksz24qfadopolwcceu.js" async></script>
     
@@ -598,6 +660,28 @@
         languageDropdown.addEventListener('click', function(e) {
             e.stopPropagation();
         });
+
+        // Header Toggle Functionality
+        const headerToggle = document.getElementById('headerToggle');
+        const header = document.querySelector('header');
+
+        headerToggle.addEventListener('click', function() {
+            header.classList.toggle('minimized');
+            document.body.classList.toggle('header-minimized');
+            this.classList.toggle('minimized');
+            
+            // Save the state in localStorage
+            const isMinimized = header.classList.contains('minimized');
+            localStorage.setItem('headerMinimized', isMinimized);
+        });
+
+        // Check for saved header state
+        const headerMinimized = localStorage.getItem('headerMinimized') === 'true';
+        if (headerMinimized) {
+            header.classList.add('minimized');
+            document.body.classList.add('header-minimized');
+            headerToggle.classList.add('minimized');
+        }
     </script>
 
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
