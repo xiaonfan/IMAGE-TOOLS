@@ -34,6 +34,10 @@
       background-size: cover;
     }
 
+    .car.invincible {
+      opacity: 0.5;
+    }
+
     .line {
       position: absolute;
       height: 60px;
@@ -81,17 +85,31 @@
       z-index: 1000;
       display: flex;
       flex-direction: row;
-      gap: 50px;
+      gap: 30px;
     }
 
     .mobile-controls button {
-      font-size: 2em;
-      padding: 15px 25px;
+      font-size: 1.2em;
+      padding: 10px 15px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       background-color: #333;
       color: white;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+    }
+
+    #flyingBtn {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      font-size: 1em;
+      padding: 8px 15px;
+      border: none;
+      border-radius: 8px;
+      background-color: #007bff;
+      color: white;
+      box-shadow: 0 3px 6px rgba(0,0,0,0.3);
+      z-index: 1000;
     }
   </style>
 </head>
@@ -109,17 +127,22 @@
     <button id="downBtn">⬇️</button>
   </div>
 
+  <!-- Flying Mode Button -->
+  <button id="flyingBtn" class="hide">✈️ Fly</button>
+
   <script>
     const score = document.querySelector(".score");
     const startScreen = document.querySelector(".startScreen");
     const gameArea = document.querySelector(".gameArea");
+    const flyingBtn = document.getElementById("flyingBtn");
 
-    let player = { speed: 3, score: 0 };
+    let player = { speed: 3, score: 0, invincible: false };
     let keys = { ArrowUp: false, ArrowDown: false, ArrowRight: false, ArrowLeft: false };
 
     startScreen.addEventListener("click", start);
     document.addEventListener("keydown", pressOn);
     document.addEventListener("keyup", pressOff);
+    flyingBtn.addEventListener("click", activateFlyingMode);
 
     function moveLines() {
       let lines = document.querySelectorAll(".line");
@@ -147,7 +170,7 @@
     function moveEnemy(car) {
       let ele = document.querySelectorAll(".enemy");
       ele.forEach(function (item) {
-        if (isCollide(car, item)) {
+        if (!player.invincible && isCollide(car, item)) {
           endGame();
         }
         if (item.y >= 800) {
@@ -157,6 +180,19 @@
         item.y += player.speed;
         item.style.top = item.y + "px";
       });
+    }
+
+    function activateFlyingMode() {
+      if (player.score >= 1000 && !player.invincible) {
+        player.invincible = true;
+        flyingBtn.classList.add("hide");
+        let car = document.querySelector(".car");
+        car.classList.add("invincible");
+        setTimeout(() => {
+          player.invincible = false;
+          car.classList.remove("invincible");
+        }, 5000);
+      }
     }
 
     function playGame() {
@@ -185,12 +221,20 @@
         window.requestAnimationFrame(playGame);
         player.score++;
         score.innerText = "Score : " + player.score;
+
+        // Show flying button every 1000 points
+        if (player.score % 1000 === 0 && !player.invincible) {
+          flyingBtn.classList.remove("hide");
+        }
       }
     }
 
     function pressOn(e) {
       e.preventDefault();
       keys[e.key] = true;
+      if (e.key === " " && player.score >= 1000 && !player.invincible) {
+        activateFlyingMode();
+      }
     }
 
     function pressOff(e) {
@@ -202,6 +246,7 @@
       player.start = false;
       score.innerHTML = "Game Over <br> Score was :" + player.score;
       startScreen.classList.remove("hide");
+      flyingBtn.classList.add("hide");
     }
 
     function start() {
@@ -210,6 +255,7 @@
       gameArea.innerHTML = "";
       player.start = true;
       player.score = 0;
+      player.invincible = false;
 
       for (let x = 0; x < 10; x++) {
         let div = document.createElement("div");
