@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://xiaonfan.github.io/IMAGE-TOOLS/sitemap.xml
