@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <link rel="icon" href="koko.png" type="image/png">
+    <link rel="icon" href="koko.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Image Cropper</title>
@@ -46,7 +46,6 @@
         #imagePreview {
             max-width: 100%;
             margin-top: 20px;
-            display: none;
         }
         .cropper-container {
             margin: 20px 0;
@@ -93,7 +92,6 @@
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
     </div>
 
-    <!-- Cropper.js Library -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
     <script>
         const uploadArea = document.getElementById('uploadArea');
@@ -105,9 +103,12 @@
         const downloadBtn = document.getElementById('downloadBtn');
 
         let cropper;
+        let croppedDataURL = ''; // to store the cropped image
 
-        // Upload image
+        // Open file selector
         uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Handle file input
         fileInput.addEventListener('change', (e) => {
             const file = e.target.files[0];
             if (file) {
@@ -118,10 +119,10 @@
                     cropperContainer.style.display = 'block';
                     controls.style.display = 'block';
 
-                    // Initialize Cropper.js
+                    // Initialize or reset cropper
                     if (cropper) cropper.destroy();
                     cropper = new Cropper(imagePreview, {
-                        aspectRatio: 1, // Set aspect ratio (1:1 for square)
+                        aspectRatio: 1,
                         viewMode: 1,
                         autoCropArea: 0.8,
                     });
@@ -130,23 +131,28 @@
             }
         });
 
-        // Crop and preview
+        // Crop button
         cropBtn.addEventListener('click', () => {
-            const croppedCanvas = cropper.getCroppedCanvas();
-            if (croppedCanvas) {
-                imagePreview.src = croppedCanvas.toDataURL('image/jpeg');
-                cropper.destroy(); // Stop cropper after crop
+            if (cropper) {
+                const canvas = cropper.getCroppedCanvas();
+                if (canvas) {
+                    croppedDataURL = canvas.toDataURL('image/jpeg');
+                    imagePreview.src = croppedDataURL;
+                    cropper.destroy();
+                    cropper = null;
+                }
             }
         });
 
-        // Download cropped image
+        // Download button
         downloadBtn.addEventListener('click', () => {
-            const croppedCanvas = cropper.getCroppedCanvas();
-            if (croppedCanvas) {
+            if (croppedDataURL) {
                 const link = document.createElement('a');
                 link.download = 'cropped-image.jpg';
-                link.href = croppedCanvas.toDataURL('image/jpeg');
+                link.href = croppedDataURL;
                 link.click();
+            } else {
+                alert("Please crop the image first.");
             }
         });
     </script>
