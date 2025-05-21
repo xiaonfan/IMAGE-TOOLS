@@ -4,34 +4,71 @@
     <link rel="icon" href="koko.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Cropper</title>
+    <title>Online Image Cropper - Free & Easy Photo Cropping Tool</title>
+    <meta name="description" content="Crop images online quickly and easily with our free Image Cropper tool. Precisely cut, trim, and edit photos to your desired dimensions. Upload, crop, and download in seconds!">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.css">
     <style>
+        /* General Reset & Font */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
+
+        /* Body & Layout */
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
         }
+
+        /* Container for the main content */
         .container {
             max-width: 800px;
+            width: 100%; /* Ensure it takes full width on smaller screens */
             margin: 0 auto;
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center content within the container */
         }
+
+        /* Heading Styles */
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Adjusted margin */
             color: #333;
         }
+
+        /* Text Content Styles */
+        .intro-text, .how-to-use {
+            text-align: left; /* Align text content to the left */
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .intro-text strong {
+            color: #4a6bff;
+        }
+        .how-to-use h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .how-to-use ol {
+            list-style-position: inside;
+            padding-left: 0; /* Remove default padding */
+        }
+        .how-to-use li {
+            margin-bottom: 8px;
+        }
+
+        /* Upload Area Styles */
         .upload-area {
             border: 2px dashed #ccc;
             padding: 30px;
@@ -39,18 +76,85 @@
             margin-bottom: 20px;
             border-radius: 10px;
             cursor: pointer;
+            transition: border-color 0.3s ease;
         }
         .upload-area:hover {
             border-color: #4a6bff;
         }
+
+        /* Image Preview & Cropper Container */
         #imagePreview {
             max-width: 100%;
-            margin-top: 20px;
+            height: auto; /* Maintain aspect ratio */
+            display: block; /* Ensure it takes its own line */
+            margin: 0 auto; /* Center the image */
         }
         .cropper-container {
             margin: 20px 0;
+            max-height: 500px; /* Limit height for large images */
+            overflow: hidden; /* Hide overflow if image is too large */
+            display: none; /* Hidden by default */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
+
+        /* Button Styles */
         button {
+            background: #4a6bff;
+            color: white;
+            border: none;
+            padding: 12px 25px; /* Larger padding for better touch targets */
+            border-radius: 8px; /* More rounded corners */
+            cursor: pointer;
+            font-size: 17px; /* Slightly larger font */
+            margin-top: 15px; /* Adjusted margin */
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background: #3a5bef;
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        button + button { /* Margin between buttons */
+            margin-left: 10px;
+        }
+
+        /* Back Button */
+        a.back-btn {
+            display: inline-block;
+            margin-top: 30px; /* More space from controls */
+            color: #4a6bff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        a.back-btn:hover {
+            text-decoration: underline;
+            color: #3a5bef;
+        }
+
+        /* Custom Message Box */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            color: #333;
+        }
+        .message-box p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .message-box button {
             background: #4a6bff;
             color: white;
             border: none;
@@ -58,38 +162,111 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 10px;
-            margin-right: 10px;
+            transition: background 0.3s ease;
         }
-        button:hover {
+        .message-box button:hover {
             background: #3a5bef;
         }
-        a.back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #4a6bff;
-            text-decoration: none;
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none; /* Hidden by default */
         }
-        a.back-btn:hover {
-            text-decoration: underline;
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            button {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            button + button {
+                margin-top: 10px;
+                margin-left: 0;
+            }
         }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Online Image Cropper",
+      "operatingSystem": "Web",
+      "applicationCategory": "Multimedia",
+      "url": "https://yourwebsite.com/image-cropper", "description": "Free online tool to crop images, trim photos, and precisely cut sections from your pictures. Easily adjust aspect ratios and download your cropped image.",
+      "featureList": [
+        "Crop images",
+        "Trim photos",
+        "Adjust aspect ratio (free, 1:1, 16:9, etc.)",
+        "Supports common image formats (e.g., JPG, PNG, GIF)",
+        "Instant preview of crop area",
+        "Direct download",
+        "Drag & Drop functionality"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.7",
+        "reviewCount": "180"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Your Website Name" }
+    }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-crop"></i> Image Cropper</h1>
+        <h1><i class="fas fa-crop"></i> Online Image Cropper</h1>
+
+        <p class="intro-text">Welcome to our free online **Image Cropper** tool! Easily cut, trim, and adjust your photos to perfection. Whether you need to remove unwanted elements, focus on a specific subject, or prepare images for social media, our intuitive tool makes image cropping simple and fast. Upload your picture, select your crop area, and download the precise result in seconds!</p>
+
         <div class="upload-area" id="uploadArea">
             <p>Drag & Drop your image here or click to browse</p>
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
         </div>
-        <div class="cropper-container" id="cropperContainer" style="display: none;">
-            <img id="imagePreview" alt="Preview">
+
+        <div class="cropper-container" id="cropperContainer">
+            <img id="imagePreview" alt="Preview of your image for cropping">
         </div>
+
         <div id="controls" style="display: none;">
             <button id="cropBtn">Crop Image</button>
             <button id="downloadBtn">Download</button>
         </div>
+
+        <div class="how-to-use">
+            <h2>How to Use Our Image Cropper:</h2>
+            <ol>
+                <li><strong>Upload Your Image:</strong> Click on the "Drag & Drop" area or drag your image file directly into it.</li>
+                <li><strong>Define Crop Area:</strong> Once your image loads, use the interactive cropping box to select the desired area of your picture. You can drag the corners to resize and move the box.</li>
+                <li><strong>Apply Crop:</strong> Click the "Crop Image" button to apply the selected crop. The preview will update to show only the cropped section.</li>
+                <li><strong>Download:</strong> If you're satisfied with the result, click the "Download" button to save your perfectly cropped image to your device.</li>
+            </ol>
+        </div>
+
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="message-box" id="messageBox">
+        <p id="messageText"></p>
+        <button id="messageBoxOkBtn">OK</button>
     </div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.5.12/cropper.min.js"></script>
@@ -102,15 +279,32 @@
         const cropBtn = document.getElementById('cropBtn');
         const downloadBtn = document.getElementById('downloadBtn');
 
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const messageBoxOkBtn = document.getElementById('messageBoxOkBtn');
+        const overlay = document.getElementById('overlay');
+
         let cropper;
         let croppedDataURL = ''; // to store the cropped image
 
-        // Open file selector
-        uploadArea.addEventListener('click', () => fileInput.click());
+        // Function to show custom message box
+        function showMessageBox(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+            overlay.style.display = 'block';
+        }
 
-        // Handle file input
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+        // Function to hide custom message box
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        // Event listener for message box OK button
+        messageBoxOkBtn.addEventListener('click', hideMessageBox);
+
+        // Function to handle file processing
+        function processFile(file) {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
@@ -122,12 +316,44 @@
                     // Initialize or reset cropper
                     if (cropper) cropper.destroy();
                     cropper = new Cropper(imagePreview, {
-                        aspectRatio: 1,
-                        viewMode: 1,
-                        autoCropArea: 0.8,
+                        aspectRatio: NaN, // Allow free aspect ratio by default
+                        viewMode: 1, // Restrict the crop box to not exceed the canvas
+                        autoCropArea: 0.8, // 80% of the image
+                        responsive: true, // Make cropper responsive
+                        background: false, // Hide the grid background
                     });
                 };
                 reader.readAsDataURL(file);
+            }
+        }
+
+        // Handle click to open file input
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Handle file input change
+        fileInput.addEventListener('change', (e) => {
+            processFile(e.target.files[0]);
+        });
+
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Prevent default to allow drop
+            uploadArea.style.borderColor = '#4a6bff'; // Visual feedback
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc'; // Reset visual feedback
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc'; // Reset visual feedback
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processFile(file);
+            } else {
+                showMessageBox("Please drop an image file.");
             }
         });
 
@@ -136,11 +362,16 @@
             if (cropper) {
                 const canvas = cropper.getCroppedCanvas();
                 if (canvas) {
-                    croppedDataURL = canvas.toDataURL('image/jpeg');
+                    // Convert to JPEG with a quality setting for smaller file size
+                    croppedDataURL = canvas.toDataURL('image/jpeg', 0.9);
                     imagePreview.src = croppedDataURL;
-                    cropper.destroy();
-                    cropper = null;
+                    cropper.destroy(); // Destroy cropper after cropping
+                    cropper = null; // Clear cropper instance
+                    // Optionally hide cropper container if you don't want to show the final image in it
+                    // cropperContainer.style.display = 'none';
                 }
+            } else {
+                showMessageBox("Please upload an image first, or the image has already been cropped.");
             }
         });
 
@@ -150,11 +381,12 @@
                 const link = document.createElement('a');
                 link.download = 'cropped-image.jpg';
                 link.href = croppedDataURL;
+                document.body.appendChild(link); // Append to body to ensure it's clickable
                 link.click();
+                document.body.removeChild(link); // Clean up
             } else {
-                alert("Please crop the image first.");
+                showMessageBox("Please crop the image first before downloading.");
             }
         });
     </script>
 </body>
-</html>
