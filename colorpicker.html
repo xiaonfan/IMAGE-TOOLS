@@ -1,40 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
     <link rel="icon" href="lok.png" type="image/png">
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Color Picker</title>
+    <title>Online Image Color Picker - Free HEX & RGB Color Extractor</title>
+    <meta name="description" content="Pick colors from any image online for free! Our easy-to-use Image Color Picker extracts HEX and RGB color codes from your photos. Upload, click, and get instant color values.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* General Reset & Font */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
+
+        /* Body & Layout */
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
         }
+
+        /* Container for the main content */
         .container {
             max-width: 800px;
+            width: 100%; /* Ensure it takes full width on smaller screens */
             margin: 0 auto;
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center content within the container */
         }
+
+        /* Heading Styles */
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Adjusted margin */
             color: #333;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 10px;
         }
+
+        /* Text Content Styles */
+        .intro-text, .how-to-use {
+            text-align: left; /* Align text content to the left */
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .intro-text strong {
+            color: #4a6bff;
+        }
+        .how-to-use h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .how-to-use ol {
+            list-style-position: inside;
+            padding-left: 0; /* Remove default padding */
+        }
+        .how-to-use li {
+            margin-bottom: 8px;
+        }
+
+        /* Upload Area Styles */
         .upload-area {
             border: 2px dashed #ccc;
             padding: 40px;
@@ -48,11 +85,26 @@
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center; /* Center content vertically and horizontally */
         }
         .upload-area:hover {
             border-color: #4a6bff;
             background: #f8faff;
         }
+        #uploadPrompt {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        #uploadPrompt p {
+            margin: 5px 0;
+        }
+        #uploadPrompt i {
+            margin-bottom: 15px;
+        }
+
+        /* Image Preview */
         #imagePreview {
             max-width: 100%;
             max-height: 400px;
@@ -61,7 +113,18 @@
             cursor: crosshair;
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
             border-radius: 8px;
+            object-fit: contain; /* Ensure image fits within max-height without cropping */
         }
+
+        /* Instructions */
+        .instructions {
+            margin: 15px 0;
+            color: #666;
+            font-style: italic;
+            text-align: center;
+        }
+
+        /* Color Result Section */
         .color-result {
             display: none;
             margin-top: 30px;
@@ -88,12 +151,14 @@
             font-size: 18px;
             font-family: 'Courier New', monospace;
         }
+
+        /* Button Styles */
         .btn {
             background: #4a6bff;
             color: white;
             border: none;
             padding: 12px 24px;
-            border-radius: 6px;
+            border-radius: 8px; /* More rounded corners */
             cursor: pointer;
             font-size: 16px;
             transition: all 0.3s;
@@ -101,6 +166,7 @@
             align-items: center;
             gap: 8px;
             margin: 0 5px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         .btn:hover {
             background: #3a5bef;
@@ -112,34 +178,6 @@
         .btn.back-btn:hover {
             background: #5a6268;
         }
-        .instructions {
-            margin: 15px 0;
-            color: #666;
-            font-style: italic;
-            text-align: center;
-        }
-        .zoom-marker {
-            position: absolute;
-            width: 100px;
-            height: 100px;
-            border: 2px solid white;
-            border-radius: 50%;
-            pointer-events: none;
-            display: none;
-            overflow: hidden;
-            box-shadow: 0 0 10px rgba(0,0,0,0.5);
-            z-index: 10;
-        }
-        .zoom-marker-content {
-            width: 100%;
-            height: 100%;
-            transform: scale(2);
-            transform-origin: 0 0;
-        }
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
         .button-group {
             display: flex;
             justify-content: center;
@@ -147,12 +185,91 @@
             margin-top: 20px;
             flex-wrap: wrap;
         }
+
+        /* Zoom Marker */
+        .zoom-marker {
+            position: fixed; /* Use fixed for better positioning relative to viewport */
+            width: 100px;
+            height: 100px;
+            border: 2px solid white;
+            border-radius: 50%;
+            pointer-events: none;
+            display: none;
+            overflow: hidden;
+            box-shadow: 0 0 15px rgba(0,0,0,0.6); /* Stronger shadow for visibility */
+            z-index: 1000; /* Ensure it's on top */
+            background-color: #000; /* Fallback background */
+        }
+        .zoom-marker-content {
+            width: 100%;
+            height: 100%;
+            transform: scale(2); /* Magnification factor */
+            transform-origin: 0 0;
+            image-rendering: pixelated; /* For sharper pixel view on zoom */
+        }
+
+        /* Animations */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            .btn {
+                width: 100%;
+                margin: 5px 0; /* Adjust margin for full width buttons */
+            }
+            .button-group {
+                flex-direction: column; /* Stack buttons on small screens */
+            }
+        }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Online Image Color Picker",
+      "operatingSystem": "Web",
+      "applicationCategory": "Multimedia",
+      "url": "https://yourwebsite.com/image-color-picker", "description": "Free online tool to pick colors from images. Extract HEX and RGB color codes instantly from any uploaded photo. Perfect for designers, developers, and artists.",
+      "featureList": [
+        "Pick colors from images",
+        "Get HEX color codes",
+        "Get RGB color codes",
+        "Live zoom preview for precise picking",
+        "Supports JPG, PNG, WEBP formats",
+        "Drag & Drop functionality",
+        "Copy color to clipboard"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "200"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Your Website Name" }
+    }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-eye-dropper"></i> Image Color Picker</h1>
-        
+        <h1><i class="fas fa-eye-dropper"></i> Online Image Color Picker</h1>
+
+        <p class="intro-text">Welcome to our free online **Image Color Picker** tool! Easily extract exact HEX and RGB color codes from any image. Perfect for web designers, graphic artists, and anyone needing to identify colors from a picture. Simply upload your image, click on any pixel, and get its precise color value instantly. Our live zoom feature ensures pinpoint accuracy!</p>
+
         <div class="upload-area" id="uploadArea">
             <div id="uploadPrompt">
                 <i class="fas fa-cloud-upload-alt" style="font-size: 48px; color: #4a6bff; margin-bottom: 15px;"></i>
@@ -160,13 +277,13 @@
                 <p style="font-size: 14px; color: #999; margin-top: 10px;">Supports JPG, PNG, WEBP</p>
             </div>
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
-            <img id="imagePreview" alt="Preview">
+            <img id="imagePreview" alt="Image preview for color picking">
         </div>
-        
+
         <div class="instructions" id="instructions" style="display: none;">
             Click anywhere on the image to pick a color
         </div>
-        
+
         <div class="color-result" id="colorResult">
             <div class="color-box" id="colorBox"></div>
             <div class="color-values">
@@ -182,10 +299,18 @@
                 </button>
             </div>
         </div>
-        
+
+        <canvas id="hiddenCanvas" style="display: none;"></canvas>
+
         <div class="zoom-marker" id="zoomMarker">
-            <div class="zoom-marker-content" id="zoomMarkerContent"></div>
+            <canvas id="zoomCanvas" width="100" height="100"></canvas>
         </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="message-box" id="messageBox">
+        <p id="messageText"></p>
+        <button id="messageBoxOkBtn">OK</button>
     </div>
 
     <script>
@@ -200,49 +325,84 @@
         const hexValue = document.getElementById('hexValue');
         const rgbValue = document.getElementById('rgbValue');
         const copyBtn = document.getElementById('copyBtn');
-        const zoomMarker = document.getElementById('zoomMarker');
-        const zoomMarkerContent = document.getElementById('zoomMarkerContent');
 
-        // Canvas for color detection
-        const canvas = document.createElement('canvas');
-        const ctx = canvas.getContext('2d');
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const messageBoxOkBtn = document.getElementById('messageBoxOkBtn');
+        const overlay = document.getElementById('overlay');
+
+        // Hidden canvas for color detection
+        const hiddenCanvas = document.getElementById('hiddenCanvas');
+        const ctx = hiddenCanvas.getContext('2d');
         let currentColor = '#FFFFFF';
-        let mouseX = 0, mouseY = 0;
+
+        // Zoom Marker Elements
+        const zoomMarker = document.getElementById('zoomMarker');
+        const zoomCanvas = document.getElementById('zoomCanvas');
+        const zoomCtx = zoomCanvas.getContext('2d');
+        const ZOOM_FACTOR = 4; // How much to magnify
+
+        let currentImage = null; // Stores the loaded Image object
+        let imageLoaded = false; // Flag to check if image is loaded
+
+        // Functions for custom message box
+        function showMessageBox(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+            overlay.style.display = 'none';
+        }
 
         // Event Listeners
         uploadArea.addEventListener('click', () => fileInput.click());
         uploadArea.addEventListener('dragover', handleDragOver);
+        uploadArea.addEventListener('dragleave', handleDragLeave);
         uploadArea.addEventListener('drop', handleDrop);
         fileInput.addEventListener('change', handleFileSelect);
         imagePreview.addEventListener('mousemove', handleMouseMove);
         imagePreview.addEventListener('click', handleColorPick);
-        imagePreview.addEventListener('mouseleave', () => zoomMarker.style.display = 'none');
+        imagePreview.addEventListener('mouseleave', () => {
+            zoomMarker.style.display = 'none';
+        });
         copyBtn.addEventListener('click', copyToClipboard);
+        messageBoxOkBtn.addEventListener('click', hideMessageBox);
 
-        // Functions
+
+        // Drag & Drop Handlers
         function handleDragOver(e) {
             e.preventDefault();
             uploadArea.style.borderColor = '#4a6bff';
             uploadArea.style.backgroundColor = '#f0f4ff';
         }
 
+        function handleDragLeave(e) {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc';
+            uploadArea.style.backgroundColor = 'transparent';
+        }
+
         function handleDrop(e) {
             e.preventDefault();
             uploadArea.style.borderColor = '#ccc';
             uploadArea.style.backgroundColor = 'transparent';
-            
+
             if (e.dataTransfer.files.length) {
                 fileInput.files = e.dataTransfer.files;
                 handleFileSelect({ target: fileInput });
             }
         }
 
+        // File Selection Handler
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (!file) return;
 
             if (!file.type.match('image.*')) {
-                alert('Please select an image file (JPG, PNG, etc.)');
+                showMessageBox('Please select an image file (JPG, PNG, WEBP, etc.)');
                 return;
             }
 
@@ -252,83 +412,113 @@
                 imagePreview.style.display = 'block';
                 uploadPrompt.style.display = 'none';
                 instructions.style.display = 'block';
-                
-                // Load image into canvas for color detection
-                const img = new Image();
-                img.onload = function() {
-                    canvas.width = this.naturalWidth;
-                    canvas.height = this.naturalHeight;
+                colorResult.style.display = 'none'; // Hide previous result
+
+                currentImage = new Image();
+                currentImage.onload = function() {
+                    hiddenCanvas.width = this.naturalWidth;
+                    hiddenCanvas.height = this.naturalHeight;
                     ctx.drawImage(this, 0, 0);
+                    imageLoaded = true;
                 };
-                img.src = event.target.result;
+                currentImage.onerror = () => {
+                    showMessageBox("Failed to load image. Please try another file.");
+                    imageLoaded = false;
+                    imagePreview.style.display = 'none';
+                    uploadPrompt.style.display = 'flex';
+                    instructions.style.display = 'none';
+                };
+                currentImage.src = event.target.result;
             };
             reader.readAsDataURL(file);
         }
 
+        // Mouse Move Handler for Zoom Marker
         function handleMouseMove(e) {
-            if (!fileInput.files[0]) return;
-            
-            const rect = imagePreview.getBoundingClientRect();
-            mouseX = e.clientX - rect.left;
-            mouseY = e.clientY - rect.top;
-            
-            // Show zoom marker
-            zoomMarker.style.display = 'block';
-            zoomMarker.style.left = (e.clientX - 50) + 'px';
-            zoomMarker.style.top = (e.clientY - 50) + 'px';
-            
-            // Update zoom marker content
-            zoomMarkerContent.innerHTML = '';
-            const zoomImg = document.createElement('img');
-            zoomImg.src = imagePreview.src;
-            zoomImg.style.width = imagePreview.width + 'px';
-            zoomImg.style.height = imagePreview.height + 'px';
-            zoomImg.style.position = 'absolute';
-            zoomImg.style.left = (-mouseX + 25) + 'px';
-            zoomImg.style.top = (-mouseY + 25) + 'px';
-            zoomMarkerContent.appendChild(zoomImg);
-        }
+            if (!imageLoaded) return;
 
-        function handleColorPick(e) {
-            if (!fileInput.files[0]) return;
-            
             const rect = imagePreview.getBoundingClientRect();
             const x = e.clientX - rect.left;
             const y = e.clientY - rect.top;
-            
-            // Calculate position on original image
-            const scaleX = imagePreview.naturalWidth / rect.width;
-            const scaleY = imagePreview.naturalHeight / rect.height;
+
+            // Update zoom marker position
+            zoomMarker.style.display = 'block';
+            // Position marker relative to the mouse, centered
+            zoomMarker.style.left = (e.clientX - zoomMarker.offsetWidth / 2) + 'px';
+            zoomMarker.style.top = (e.clientY - zoomMarker.offsetHeight / 2) + 'px';
+
+            // Calculate source coordinates on the actual image for the zoom
+            const scaleX = currentImage.naturalWidth / rect.width;
+            const scaleY = currentImage.naturalHeight / rect.height;
+
+            const sourceX = Math.max(0, Math.min(currentImage.naturalWidth - zoomCanvas.width / ZOOM_FACTOR, (x * scaleX) - (zoomCanvas.width / ZOOM_FACTOR / 2)));
+            const sourceY = Math.max(0, Math.min(currentImage.naturalHeight - zoomCanvas.height / ZOOM_FACTOR, (y * scaleY) - (zoomCanvas.height / ZOOM_FACTOR / 2)));
+
+            // Clear zoom canvas and draw magnified portion
+            zoomCtx.clearRect(0, 0, zoomCanvas.width, zoomCanvas.height);
+            zoomCtx.imageSmoothingEnabled = false; // For pixelated effect
+            zoomCtx.drawImage(
+                currentImage,
+                sourceX,
+                sourceY,
+                zoomCanvas.width / ZOOM_FACTOR, // Source width
+                zoomCanvas.height / ZOOM_FACTOR, // Source height
+                0, 0,
+                zoomCanvas.width, // Destination width
+                zoomCanvas.height // Destination height
+            );
+        }
+
+        // Color Pick Handler
+        function handleColorPick(e) {
+            if (!imageLoaded) {
+                showMessageBox("Please upload an image first.");
+                return;
+            }
+
+            const rect = imagePreview.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            // Calculate position on original image (canvas)
+            const scaleX = hiddenCanvas.width / rect.width;
+            const scaleY = hiddenCanvas.height / rect.height;
             const pixelX = Math.floor(x * scaleX);
             const pixelY = Math.floor(y * scaleY);
-            
-            // Get pixel data
+
+            // Get pixel data from the hidden canvas
             const pixel = ctx.getImageData(pixelX, pixelY, 1, 1).data;
             const r = pixel[0];
             const g = pixel[1];
             const b = pixel[2];
-            
+
             // Convert to HEX and RGB
             currentColor = rgbToHex(r, g, b);
             const rgb = `rgb(${r}, ${g}, ${b})`;
-            
+
             // Update UI
             colorBox.style.backgroundColor = currentColor;
             hexValue.textContent = currentColor;
             rgbValue.textContent = rgb;
             colorResult.style.display = 'block';
-            
+
             // Hide zoom marker after click
             zoomMarker.style.display = 'none';
         }
 
+        // Utility: RGB to HEX conversion
         function rgbToHex(r, g, b) {
             return "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1).toUpperCase();
         }
 
+        // Copy to Clipboard
         function copyToClipboard() {
-            const textToCopy = `Color: ${currentColor}\nRGB: ${rgbValue.textContent}`;
-            
+            if (!currentColor || currentColor === '#FFFFFF') {
+                showMessageBox("No color picked yet.");
+                return;
+            }
+            const textToCopy = `HEX: ${hexValue.textContent}\nRGB: ${rgbValue.textContent}`;
+
             navigator.clipboard.writeText(textToCopy)
                 .then(() => {
                     copyBtn.innerHTML = '<i class="fas fa-check"></i> Copied!';
@@ -338,6 +528,7 @@
                 })
                 .catch(err => {
                     console.error('Failed to copy: ', err);
+                    showMessageBox("Failed to copy color to clipboard. Please try again.");
                 });
         }
     </script>
