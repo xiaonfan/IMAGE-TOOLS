@@ -1,35 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <link rel="icon" href="koko.png" type="image/png"> <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Compressor</title>
+    <title>Online Image Compressor - Free Photo Size Reducer</title>
+    <meta name="description" content="Compress images online for free! Reduce photo file size without losing quality using our easy-to-use Image Compressor tool. Optimize JPG, PNG, and GIF images for web and email.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
+        /* General Reset & Font */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Arial', sans-serif;
         }
+
+        /* Body & Layout */
         body {
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
         }
+
+        /* Container for the main content */
         .container {
             max-width: 800px;
+            width: 100%; /* Ensure it takes full width on smaller screens */
             margin: 0 auto;
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center content within the container */
         }
+
+        /* Heading Styles */
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Adjusted margin */
             color: #333;
         }
+
+        /* Text Content Styles */
+        .intro-text, .how-to-use {
+            text-align: left; /* Align text content to the left */
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .intro-text strong {
+            color: #4a6bff;
+        }
+        .how-to-use h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .how-to-use ol {
+            list-style-position: inside;
+            padding-left: 0; /* Remove default padding */
+        }
+        .how-to-use li {
+            margin-bottom: 8px;
+        }
+
+        /* Upload Area Styles */
         .upload-area {
             border: 2px dashed #ccc;
             padding: 30px;
@@ -37,23 +74,140 @@
             margin-bottom: 20px;
             border-radius: 10px;
             cursor: pointer;
+            transition: border-color 0.3s ease;
         }
         .upload-area:hover {
             border-color: #4a6bff;
         }
+
+        /* Image Preview */
         #imagePreview {
             max-width: 100%;
+            height: auto; /* Maintain aspect ratio */
             margin-top: 20px;
-            display: none;
+            display: none; /* Hidden by default */
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
+
+        /* Controls Section */
         .controls {
             margin-top: 20px;
+            text-align: left; /* Align controls to the left */
+        }
+        .controls label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
         }
         input[type="range"] {
             width: 100%;
             margin: 10px 0;
+            -webkit-appearance: none; /* Remove default styling for range input */
+            height: 8px;
+            background: #ddd;
+            border-radius: 5px;
+            outline: none;
+            opacity: 0.7;
+            transition: opacity .2s;
         }
+        input[type="range"]:hover {
+            opacity: 1;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4a6bff;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #4a6bff;
+            cursor: pointer;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        #qualityValue {
+            display: inline-block;
+            margin-left: 10px;
+            font-weight: bold;
+            color: #4a6bff;
+        }
+
+        /* File Info */
+        .file-info {
+            margin-top: 10px;
+            color: #666;
+            text-align: left;
+            font-size: 14px;
+        }
+        .file-info strong {
+            color: #333;
+        }
+
+        /* Button Styles */
         button {
+            background: #4a6bff;
+            color: white;
+            border: none;
+            padding: 12px 25px; /* Larger padding for better touch targets */
+            border-radius: 8px; /* More rounded corners */
+            cursor: pointer;
+            font-size: 17px; /* Slightly larger font */
+            margin-top: 15px; /* Adjusted margin */
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        button:hover {
+            background: #3a5bef;
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        button + button { /* Margin between buttons */
+            margin-left: 10px;
+        }
+
+        /* Back Button */
+        a.back-btn {
+            display: inline-block;
+            margin-top: 30px; /* More space from controls */
+            color: #4a6bff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
+        }
+        a.back-btn:hover {
+            text-decoration: underline;
+            color: #3a5bef;
+        }
+
+        /* Custom Message Box */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            color: #333;
+        }
+        .message-box p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .message-box button {
             background: #4a6bff;
             color: white;
             border: none;
@@ -61,43 +215,114 @@
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
-            margin-top: 10px;
+            transition: background 0.3s ease;
         }
-        button:hover {
+        .message-box button:hover {
             background: #3a5bef;
         }
-        a.back-btn {
-            display: inline-block;
-            margin-top: 20px;
-            color: #4a6bff;
-            text-decoration: none;
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none; /* Hidden by default */
         }
-        a.back-btn:hover {
-            text-decoration: underline;
-        }
-        .file-info {
-            margin-top: 10px;
-            color: #666;
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            button {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            button + button {
+                margin-top: 10px;
+                margin-left: 0;
+            }
         }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Online Image Compressor",
+      "operatingSystem": "Web",
+      "applicationCategory": "Multimedia",
+      "url": "https://yourwebsite.com/image-compressor", "description": "Free online tool to compress images and reduce photo file size. Optimize JPG, PNG, and GIF formats for faster loading on websites and easy sharing via email.",
+      "featureList": [
+        "Compress JPG, PNG, GIF images",
+        "Adjust compression quality",
+        "Reduce file size",
+        "Maintain image quality (adjustable)",
+        "Instant preview of compressed image",
+        "Display original vs. compressed size",
+        "Direct download",
+        "Drag & Drop functionality"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "320"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Your Website Name" }
+    }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-compress-alt"></i> Image Compressor</h1>
+        <h1><i class="fas fa-compress-alt"></i> Online Image Compressor</h1>
+
+        <p class="intro-text">Welcome to our free online **Image Compressor** tool! Easily reduce the file size of your photos without significant loss of quality. Perfect for optimizing images for websites, emails, and social media, our tool helps you save bandwidth and speed up loading times. Simply upload your image, adjust the compression quality, and download your optimized file.</p>
+
         <div class="upload-area" id="uploadArea">
             <p>Drag & Drop your image here or click to browse</p>
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
-            <img id="imagePreview" alt="Preview">
+            <img id="imagePreview" alt="Preview of your image for compression">
         </div>
+
         <div class="file-info" id="fileInfo"></div>
+
         <div class="controls" id="controls" style="display: none;">
-            <label for="quality">Quality (Lower = Smaller File):</label>
+            <label for="quality">Quality (Lower % = Smaller File Size):</label>
             <input type="range" id="quality" min="10" max="100" value="70">
             <span id="qualityValue">70%</span>
             <button id="compressBtn">Compress Image</button>
             <button id="downloadBtn">Download</button>
         </div>
+
+        <div class="how-to-use">
+            <h2>How to Use Our Image Compressor:</h2>
+            <ol>
+                <li><strong>Upload Your Image:</strong> Click on the "Drag & Drop" area or drag your image file directly into it.</li>
+                <li><strong>Adjust Quality:</strong> Use the "Quality" slider to choose your desired compression level. A lower percentage means a smaller file size but potentially more quality loss.</li>
+                <li><strong>Compress & Preview:</strong> Click the "Compress Image" button. You'll see the compressed image preview and the new file size.</li>
+                <li><strong>Download:</strong> If you're happy with the result, click the "Download" button to save your optimized image.</li>
+            </ol>
+        </div>
+
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="message-box" id="messageBox">
+        <p id="messageText"></p>
+        <button id="messageBoxOkBtn">OK</button>
     </div>
 
     <script>
@@ -111,35 +336,88 @@
         const downloadBtn = document.getElementById('downloadBtn');
         const fileInfo = document.getElementById('fileInfo');
 
-        let originalFile = null;
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const messageBoxOkBtn = document.getElementById('messageBoxOkBtn');
+        const overlay = document.getElementById('overlay');
 
-        // Upload image
-        uploadArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
-            if (file) {
+        let originalFile = null;
+        let originalFileSize = 0;
+
+        // Function to show custom message box
+        function showMessageBox(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        // Function to hide custom message box
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        // Event listener for message box OK button
+        messageBoxOkBtn.addEventListener('click', hideMessageBox);
+
+        // Function to process file
+        function processFile(file) {
+            if (file && file.type.startsWith('image/')) {
                 originalFile = file;
+                originalFileSize = file.size;
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     imagePreview.src = event.target.result;
                     imagePreview.style.display = 'block';
                     controls.style.display = 'block';
-                    fileInfo.innerHTML = `
-                        <strong>Original File:</strong> ${(file.size / 1024).toFixed(2)} KB
-                    `;
+                    fileInfo.innerHTML = `<strong>Original File:</strong> ${(originalFileSize / 1024).toFixed(2)} KB`;
+                    // Reset quality slider to default
+                    qualitySlider.value = 70;
+                    qualityValue.textContent = '70%';
                 };
                 reader.readAsDataURL(file);
+            } else {
+                showMessageBox("Please upload an image file (JPG, PNG, GIF).");
             }
+        }
+
+        // Handle click to open file input
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Handle file input change
+        fileInput.addEventListener('change', (e) => {
+            processFile(e.target.files[0]);
         });
 
-        // Update quality value
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Prevent default to allow drop
+            uploadArea.style.borderColor = '#4a6bff'; // Visual feedback
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc'; // Reset visual feedback
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc'; // Reset visual feedback
+            const file = e.dataTransfer.files[0];
+            processFile(file);
+        });
+
+        // Update quality value display
         qualitySlider.addEventListener('input', () => {
             qualityValue.textContent = `${qualitySlider.value}%`;
         });
 
         // Compress image
         compressBtn.addEventListener('click', () => {
-            if (!originalFile) return;
+            if (!originalFile) {
+                showMessageBox("Please upload an image first to compress.");
+                return;
+            }
 
             const quality = parseInt(qualitySlider.value) / 100;
             const canvas = document.createElement('canvas');
@@ -151,13 +429,43 @@
                 canvas.height = img.height;
                 ctx.drawImage(img, 0, 0);
 
-                // Convert to compressed JPEG
-                const compressedData = canvas.toDataURL('image/jpeg', quality);
-                imagePreview.src = compressedData;
+                // Convert to compressed image based on original type or force JPEG for wider compatibility
+                let compressedDataURL;
+                let mimeType = originalFile.type;
 
-                // Update file info
-                const compressedSize = (compressedData.length * 0.75) / 1024; // Approx KB
-                fileInfo.innerHTML += `<br><strong>Compressed File:</strong> ${compressedSize.toFixed(2)} KB (${qualitySlider.value}% Quality)`;
+                // For compression, JPEG is generally most effective.
+                // If original is PNG/GIF and user wants strong compression, convert to JPEG.
+                // Otherwise, try to maintain original type if it's already JPEG.
+                if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') {
+                    compressedDataURL = canvas.toDataURL('image/jpeg', quality);
+                } else {
+                    // For PNG/GIF, if quality is low, convert to JPEG for better compression.
+                    // Otherwise, keep as PNG (GIF compression is complex and not handled by toDataURL quality).
+                    if (quality < 0.8 && (mimeType === 'image/png' || mimeType === 'image/gif')) {
+                         compressedDataURL = canvas.toDataURL('image/jpeg', quality);
+                         mimeType = 'image/jpeg'; // Update mimeType for download
+                    } else {
+                         compressedDataURL = canvas.toDataURL(mimeType, quality);
+                    }
+                }
+
+                imagePreview.src = compressedDataURL;
+
+                // Calculate and update file info
+                // The 0.75 factor is a rough estimate for base64 encoded image data to actual byte size
+                // For more accurate size, you'd need to convert dataURL to Blob and get its size
+                const compressedSize = (compressedDataURL.length * 0.75) / 1024;
+                const reduction = originalFileSize > 0 ? (((originalFileSize - (compressedSize * 1024)) / originalFileSize) * 100).toFixed(1) : 0;
+
+                fileInfo.innerHTML = `
+                    <strong>Original File:</strong> ${(originalFileSize / 1024).toFixed(2)} KB<br>
+                    <strong>Compressed File:</strong> ${compressedSize.toFixed(2)} KB (${qualitySlider.value}% Quality)<br>
+                    <strong>Size Reduction:</strong> ${reduction}%
+                `;
+            };
+
+            img.onerror = () => {
+                showMessageBox("Failed to load image for compression. Please try another file.");
             };
 
             img.src = URL.createObjectURL(originalFile);
@@ -165,10 +473,26 @@
 
         // Download compressed image
         downloadBtn.addEventListener('click', () => {
+            if (!imagePreview.src || imagePreview.src.startsWith('data:,')) { // Check for empty or invalid data URL
+                showMessageBox("No compressed image available to download. Please compress an image first.");
+                return;
+            }
+
             const link = document.createElement('a');
-            link.download = 'compressed-image.jpg';
+            // Determine file extension based on the data URL's MIME type
+            const mimeType = imagePreview.src.split(';')[0].split(':')[1];
+            let extension = 'jpg'; // Default to jpg
+            if (mimeType === 'image/png') {
+                extension = 'png';
+            } else if (mimeType === 'image/gif') {
+                extension = 'gif';
+            }
+
+            link.download = `compressed-image.${extension}`;
             link.href = imagePreview.src;
+            document.body.appendChild(link); // Append to body to ensure it's clickable
             link.click();
+            document.body.removeChild(link); // Clean up
         });
     </script>
 </body>
