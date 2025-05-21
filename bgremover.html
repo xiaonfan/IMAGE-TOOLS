@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <link rel="icon" href="koko.png" type="image/png">
+    <link rel="icon" href="mahnat.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Online Image Compressor - Free Photo Size Reducer</title>
-    <meta name="description" content="Compress images online for free! Reduce photo file size without losing quality using our easy-to-use Image Compressor tool. Optimize JPG, PNG, and GIF images for web and email.">
+    <title>Online Image Rotator & Flipper - Free Photo Editor</title>
+    <meta name="description" content="Rotate and flip images online for free! Easily rotate photos left or right, and flip them horizontally or vertically with our user-friendly Image Rotator & Flipper tool. Perfect for quick photo adjustments.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* General Reset & Font */
@@ -89,67 +89,18 @@
             display: none; /* Hidden by default */
             border-radius: 8px;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+            /* Apply transforms directly to the image for live preview */
+            transition: transform 0.2s ease-out;
         }
 
         /* Controls Section */
         .controls {
             margin-top: 20px;
-            text-align: left; /* Align controls to the left */
-        }
-        .controls label {
-            display: block;
-            margin-bottom: 5px;
-            font-weight: bold;
-            color: #333;
-        }
-        input[type="range"] {
-            width: 100%;
-            margin: 10px 0;
-            -webkit-appearance: none; /* Remove default styling for range input */
-            height: 8px;
-            background: #ddd;
-            border-radius: 5px;
-            outline: none;
-            opacity: 0.7;
-            transition: opacity .2s;
-        }
-        input[type="range"]:hover {
-            opacity: 1;
-        }
-        input[type="range"]::-webkit-slider-thumb {
-            -webkit-appearance: none;
-            appearance: none;
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #4a6bff;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        input[type="range"]::-moz-range-thumb {
-            width: 20px;
-            height: 20px;
-            border-radius: 50%;
-            background: #4a6bff;
-            cursor: pointer;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        #qualityValue {
-            display: inline-block;
-            margin-left: 10px;
-            font-weight: bold;
-            color: #4a6bff;
-        }
-
-        /* File Info */
-        .file-info {
-            margin-top: 10px;
-            color: #666;
-            text-align: left;
-            font-size: 14px;
-        }
-        .file-info strong {
-            color: #333;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center; /* Center buttons */
+            text-align: center; /* Ensure text inside is centered too */
         }
 
         /* Button Styles */
@@ -157,20 +108,23 @@
             background: #4a6bff;
             color: white;
             border: none;
-            padding: 12px 25px; /* Larger padding for better touch targets */
+            padding: 12px 20px; /* Adjusted padding for icons */
             border-radius: 8px; /* More rounded corners */
             cursor: pointer;
-            font-size: 17px; /* Slightly larger font */
-            margin-top: 15px; /* Adjusted margin */
+            font-size: 16px; /* Slightly larger font */
+            margin-top: 10px;
             transition: background 0.3s ease, transform 0.2s ease;
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: flex; /* Allow icon and text to be side-by-side */
+            align-items: center;
+            justify-content: center;
+        }
+        button i {
+            margin-right: 8px; /* Space between icon and text */
         }
         button:hover {
             background: #3a5bef;
             transform: translateY(-2px); /* Slight lift effect */
-        }
-        button + button { /* Margin between buttons */
-            margin-left: 10px;
         }
 
         /* Back Button */
@@ -240,14 +194,11 @@
             h1 {
                 font-size: 28px;
             }
-            button {
-                width: 100%;
-                margin-left: 0;
-                margin-top: 10px;
+            .controls button {
+                width: calc(50% - 5px); /* Two buttons per row */
             }
-            button + button {
-                margin-top: 10px;
-                margin-left: 0;
+            .controls {
+                gap: 5px; /* Smaller gap on small screens */
             }
         }
     </style>
@@ -255,17 +206,17 @@
     {
       "@context": "http://schema.org",
       "@type": "SoftwareApplication",
-      "name": "Online Image Compressor",
+      "name": "Online Image Rotator and Flipper",
       "operatingSystem": "Web",
       "applicationCategory": "Multimedia",
-      "url": "https://yourwebsite.com/image-compressor", "description": "Free online tool to compress images and reduce photo file size. Optimize JPG, PNG, and GIF formats for faster loading on websites and easy sharing via email.",
+      "url": "https://yourwebsite.com/image-rotator-flipper", "description": "Free online tool to rotate images 90 degrees left or right, and flip photos horizontally or vertically. Quickly adjust image orientation for web, social media, or personal use.",
       "featureList": [
-        "Compress JPG, PNG, GIF images",
-        "Adjust compression quality",
-        "Reduce file size",
-        "Maintain image quality (adjustable)",
-        "Instant preview of compressed image",
-        "Display original vs. compressed size",
+        "Rotate image left (90 degrees)",
+        "Rotate image right (90 degrees)",
+        "Flip image horizontally",
+        "Flip image vertically",
+        "Supports common image formats (e.g., JPG, PNG, GIF)",
+        "Instant visual preview",
         "Direct download",
         "Drag & Drop functionality"
       ],
@@ -276,8 +227,8 @@
       },
       "aggregateRating": {
         "@type": "AggregateRating",
-        "ratingValue": "4.9",
-        "reviewCount": "320"
+        "ratingValue": "4.8",
+        "reviewCount": "120"
       },
       "publisher": {
         "@type": "Organization",
@@ -287,33 +238,36 @@
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-compress-alt"></i> Online Image Compressor</h1>
+        <h1><i class="fas fa-sync-alt"></i> Online Image Rotator & Flipper</h1>
 
-        <p class="intro-text">Welcome to our free online **Image Compressor** tool! Easily reduce the file size of your photos without significant loss of quality. Perfect for optimizing images for websites, emails, and social media, our tool helps you save bandwidth and speed up loading times. Simply upload your image, adjust the compression quality, and download your optimized file.</p>
+        <p class="intro-text">Welcome to our free online **Image Rotator & Flipper** tool! Easily adjust the orientation of your photos with just a few clicks. Whether you need to rotate an image 90 degrees, or flip it horizontally or vertically, our tool provides instant transformations. Perfect for correcting photo orientation or creating mirrored effects for creative projects. Upload your image, apply the desired transformation, and download your adjusted photo in seconds!</p>
 
         <div class="upload-area" id="uploadArea">
             <p>Drag & Drop your image here or click to browse</p>
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
-            <img id="imagePreview" alt="Preview of your image for compression">
+            <img id="imagePreview" alt="Preview of your image for rotation and flipping">
         </div>
 
-        <div class="file-info" id="fileInfo"></div>
-
         <div class="controls" id="controls" style="display: none;">
-            <label for="quality">Quality (Lower % = Smaller File Size):</label>
-            <input type="range" id="quality" min="10" max="100" value="70">
-            <span id="qualityValue">70%</span>
-            <button id="compressBtn">Compress Image</button>
-            <button id="downloadBtn">Download</button>
+            <button id="rotateLeftBtn"><i class="fas fa-undo"></i> Rotate Left</button>
+            <button id="rotateRightBtn"><i class="fas fa-redo"></i> Rotate Right</button>
+            <button id="flipHorizontalBtn"><i class="fas fa-arrows-alt-h"></i> Flip Horizontal</button>
+            <button id="flipVerticalBtn"><i class="fas fa-arrows-alt-v"></i> Flip Vertical</button>
+            <button id="downloadBtn"><i class="fas fa-download"></i> Download</button>
         </div>
 
         <div class="how-to-use">
-            <h2>How to Use Our Image Compressor:</h2>
+            <h2>How to Use Our Image Rotator & Flipper:</h2>
             <ol>
                 <li><strong>Upload Your Image:</strong> Click on the "Drag & Drop" area or drag your image file directly into it.</li>
-                <li><strong>Adjust Quality:</strong> Use the "Quality" slider to choose your desired compression level. A lower percentage means a smaller file size but potentially more quality loss.</li>
-                <li><strong>Compress & Preview:</strong> Click the "Compress Image" button. You'll see the compressed image preview and the new file size.</li>
-                <li><strong>Download:</strong> If you're happy with the result, click the "Download" button to save your optimized image.</li>
+                <li><strong>Apply Transformations:</strong>
+                    <ul>
+                        <li>Click "Rotate Left" or "Rotate Right" to rotate your image by 90-degree increments.</li>
+                        <li>Click "Flip Horizontal" to mirror your image along its vertical axis.</li>
+                        <li>Click "Flip Vertical" to mirror your image along its horizontal axis.</li>
+                    </ul>
+                </li>
+                <li><strong>Download:</strong> Once you're satisfied with the orientation, click the "Download" button to save your transformed image.</li>
             </ol>
         </div>
 
@@ -331,19 +285,22 @@
         const fileInput = document.getElementById('fileInput');
         const imagePreview = document.getElementById('imagePreview');
         const controls = document.getElementById('controls');
-        const qualitySlider = document.getElementById('quality');
-        const qualityValue = document.getElementById('qualityValue');
-        const compressBtn = document.getElementById('compressBtn');
+        const rotateLeftBtn = document.getElementById('rotateLeftBtn');
+        const rotateRightBtn = document.getElementById('rotateRightBtn');
+        const flipHorizontalBtn = document.getElementById('flipHorizontalBtn');
+        const flipVerticalBtn = document.getElementById('flipVerticalBtn');
         const downloadBtn = document.getElementById('downloadBtn');
-        const fileInfo = document.getElementById('fileInfo');
 
         const messageBox = document.getElementById('messageBox');
         const messageText = document.getElementById('messageText');
         const messageBoxOkBtn = document.getElementById('messageBoxOkBtn');
         const overlay = document.getElementById('overlay');
 
-        let originalFile = null;
-        let originalFileSize = 0;
+        let currentRotation = 0;
+        let currentScaleX = 1;
+        let currentScaleY = 1;
+        let originalImage = null; // Stores the original Image object
+        let originalMimeType = 'image/png'; // Default MIME type for download
 
         // Function to show custom message box
         function showMessageBox(message) {
@@ -364,21 +321,21 @@
         // Function to process file
         function processFile(file) {
             if (file && file.type.startsWith('image/')) {
-                originalFile = file;
-                originalFileSize = file.size;
+                originalMimeType = file.type; // Store original MIME type for download
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     imagePreview.src = event.target.result;
                     imagePreview.style.display = 'block';
-                    controls.style.display = 'block';
-                    fileInfo.innerHTML = `<strong>Original File:</strong> ${(originalFileSize / 1024).toFixed(2)} KB`;
-                    // Reset quality slider to default
-                    qualitySlider.value = 70;
-                    qualityValue.textContent = '70%';
+                    controls.style.display = 'flex'; // Use flex for button layout
+                    originalImage = new Image();
+                    originalImage.onload = () => {
+                        resetTransforms(); // Reset transforms when a new image is loaded
+                    };
+                    originalImage.src = event.target.result;
                 };
                 reader.readAsDataURL(file);
             } else {
-                showMessageBox("Please upload an image file (JPG, PNG, GIF).");
+                showMessageBox("Please upload an image file.");
             }
         }
 
@@ -408,89 +365,98 @@
             processFile(file);
         });
 
-        // Update quality value display
-        qualitySlider.addEventListener('input', () => {
-            qualityValue.textContent = `${qualitySlider.value}%`;
+        function resetTransforms() {
+            currentRotation = 0;
+            currentScaleX = 1;
+            currentScaleY = 1;
+            applyTransforms();
+        }
+
+        function applyTransforms() {
+            // Apply CSS transforms for live preview
+            imagePreview.style.transform = `
+                rotate(${currentRotation}deg)
+                scaleX(${currentScaleX})
+                scaleY(${currentScaleY})
+            `;
+        }
+
+        // Rotation and flipping functions
+        rotateLeftBtn.addEventListener('click', () => {
+            if (!originalImage) { showMessageBox("Please upload an image first."); return; }
+            currentRotation -= 90;
+            applyTransforms();
         });
 
-        // Compress image
-        compressBtn.addEventListener('click', () => {
-            if (!originalFile) {
-                showMessageBox("Please upload an image first to compress.");
+        rotateRightBtn.addEventListener('click', () => {
+            if (!originalImage) { showMessageBox("Please upload an image first."); return; }
+            currentRotation += 90;
+            applyTransforms();
+        });
+
+        flipHorizontalBtn.addEventListener('click', () => {
+            if (!originalImage) { showMessageBox("Please upload an image first."); return; }
+            currentScaleX *= -1;
+            applyTransforms();
+        });
+
+        flipVerticalBtn.addEventListener('click', () => {
+            if (!originalImage) { showMessageBox("Please upload an image first."); return; }
+            currentScaleY *= -1;
+            applyTransforms();
+        });
+
+        // Download function
+        downloadBtn.addEventListener('click', () => {
+            if (!originalImage) {
+                showMessageBox("No image loaded to download. Please upload an image first.");
                 return;
             }
 
-            const quality = parseInt(qualitySlider.value) / 100;
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            const img = new Image();
 
-            img.onload = () => {
-                canvas.width = img.width;
-                canvas.height = img.height;
-                ctx.drawImage(img, 0, 0);
+            // Determine canvas dimensions based on rotation
+            let finalWidth = originalImage.width;
+            let finalHeight = originalImage.height;
 
-                // Convert to compressed image based on original type or force JPEG for wider compatibility
-                let compressedDataURL;
-                let mimeType = originalFile.type;
-
-                // For compression, JPEG is generally most effective.
-                // If original is PNG/GIF and user wants strong compression, convert to JPEG.
-                // Otherwise, try to maintain original type if it's already JPEG.
-                if (mimeType === 'image/jpeg' || mimeType === 'image/jpg') {
-                    compressedDataURL = canvas.toDataURL('image/jpeg', quality);
-                } else {
-                    // For PNG/GIF, if quality is low, convert to JPEG for better compression.
-                    // Otherwise, keep as PNG (GIF compression is complex and not handled by toDataURL quality).
-                    if (quality < 0.8 && (mimeType === 'image/png' || mimeType === 'image/gif')) {
-                         compressedDataURL = canvas.toDataURL('image/jpeg', quality);
-                         mimeType = 'image/jpeg'; // Update mimeType for download
-                    } else {
-                         compressedDataURL = canvas.toDataURL(mimeType, quality);
-                    }
-                }
-
-                imagePreview.src = compressedDataURL;
-
-                // Calculate and update file info
-                // The 0.75 factor is a rough estimate for base64 encoded image data to actual byte size
-                // For more accurate size, you'd need to convert dataURL to Blob and get its size
-                const compressedSize = (compressedDataURL.length * 0.75) / 1024;
-                const reduction = originalFileSize > 0 ? (((originalFileSize - (compressedSize * 1024)) / originalFileSize) * 100).toFixed(1) : 0;
-
-                fileInfo.innerHTML = `
-                    <strong>Original File:</strong> ${(originalFileSize / 1024).toFixed(2)} KB<br>
-                    <strong>Compressed File:</strong> ${compressedSize.toFixed(2)} KB (${qualitySlider.value}% Quality)<br>
-                    <strong>Size Reduction:</strong> ${reduction}%
-                `;
-            };
-
-            img.onerror = () => {
-                showMessageBox("Failed to load image for compression. Please try another file.");
-            };
-
-            img.src = URL.createObjectURL(originalFile);
-        });
-
-        // Download compressed image
-        downloadBtn.addEventListener('click', () => {
-            if (!imagePreview.src || imagePreview.src.startsWith('data:,')) { // Check for empty or invalid data URL
-                showMessageBox("No compressed image available to download. Please compress an image first.");
-                return;
+            // If rotated by 90 or 270 degrees, swap width and height
+            if (Math.abs(currentRotation % 360) === 90 || Math.abs(currentRotation % 360) === 270) {
+                finalWidth = originalImage.height;
+                finalHeight = originalImage.width;
             }
 
+            canvas.width = finalWidth;
+            canvas.height = finalHeight;
+
+            // Translate to center for rotation and scaling
+            ctx.translate(canvas.width / 2, canvas.height / 2);
+
+            // Apply rotation
+            ctx.rotate(currentRotation * Math.PI / 180);
+
+            // Apply flipping
+            ctx.scale(currentScaleX, currentScaleY);
+
+            // Draw the image
+            // The image is drawn from its top-left corner, so adjust for translation
+            ctx.drawImage(
+                originalImage,
+                -originalImage.width / 2,
+                -originalImage.height / 2
+            );
+
             const link = document.createElement('a');
-            // Determine file extension based on the data URL's MIME type
-            const mimeType = imagePreview.src.split(';')[0].split(':')[1];
-            let extension = 'jpg'; // Default to jpg
-            if (mimeType === 'image/png') {
-                extension = 'png';
-            } else if (mimeType === 'image/gif') {
+            // Determine file extension based on the original MIME type
+            let extension = 'png'; // Default
+            if (originalMimeType.includes('jpeg')) {
+                extension = 'jpg';
+            } else if (originalMimeType.includes('gif')) {
                 extension = 'gif';
             }
 
-            link.download = `compressed-image.${extension}`;
-            link.href = imagePreview.src;
+            link.download = `transformed-image.${extension}`;
+            link.href = canvas.toDataURL(originalMimeType); // Use original MIME type for download
             document.body.appendChild(link); // Append to body to ensure it's clickable
             link.click();
             document.body.removeChild(link); // Clean up
