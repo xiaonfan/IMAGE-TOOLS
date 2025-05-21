@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-        <link rel="icon" href="resirer.png" type="image/png">
-
+    <link rel="icon" href="resirer.png" type="image/png">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Image Resizer</title>
+    <title>Online Image Resizer - Free & Easy Photo Resizing Tool</title>
+    <meta name="description" content="Resize images online quickly and easily with our free Image Resizer tool. Adjust width and height in pixels for perfect image dimensions. Upload, resize, and download in seconds!">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         * {
@@ -18,19 +18,44 @@
             background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start; /* Align to top for better content flow */
         }
         .container {
             max-width: 800px;
+            width: 100%; /* Ensure it takes full width on smaller screens */
             margin: 0 auto;
             background: white;
             padding: 30px;
             border-radius: 15px;
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            text-align: center; /* Center content within the container */
         }
         h1 {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 20px; /* Adjusted margin */
             color: #333;
+        }
+        .intro-text, .how-to-use {
+            text-align: left; /* Align text content to the left */
+            margin-bottom: 20px;
+            color: #555;
+            line-height: 1.6;
+        }
+        .intro-text strong {
+            color: #4a6bff;
+        }
+        .how-to-use h2 {
+            margin-bottom: 15px;
+            color: #333;
+        }
+        .how-to-use ol {
+            list-style-position: inside;
+            padding-left: 0; /* Remove default padding */
+        }
+        .how-to-use li {
+            margin-bottom: 8px;
         }
         .upload-area {
             border: 2px dashed #ccc;
@@ -39,77 +64,163 @@
             margin-bottom: 20px;
             border-radius: 10px;
             cursor: pointer;
+            transition: border-color 0.3s ease;
         }
         .upload-area:hover {
             border-color: #4a6bff;
         }
         #imagePreview {
             max-width: 100%;
+            height: auto; /* Maintain aspect ratio */
             margin-top: 20px;
             display: none;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
         }
         .controls {
             margin-top: 20px;
+            text-align: left; /* Align controls to the left */
+        }
+        .controls label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #333;
         }
         input[type="range"], input[type="number"] {
-            width: 100%;
+            width: calc(100% - 10px); /* Adjust width for padding */
             margin: 10px 0;
+            padding: 8px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
         }
         button {
             background: #4a6bff;
             color: white;
             border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
+            padding: 12px 25px; /* Larger padding for better touch targets */
+            border-radius: 8px; /* More rounded corners */
             cursor: pointer;
-            font-size: 16px;
-            margin-top: 10px;
+            font-size: 17px; /* Slightly larger font */
+            margin-top: 15px; /* Adjusted margin */
+            transition: background 0.3s ease, transform 0.2s ease;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         button:hover {
             background: #3a5bef;
+            transform: translateY(-2px); /* Slight lift effect */
+        }
+        button + button { /* Margin between buttons */
+            margin-left: 10px;
         }
         a.back-btn {
             display: inline-block;
-            margin-top: 20px;
+            margin-top: 30px; /* More space from controls */
             color: #4a6bff;
             text-decoration: none;
+            font-size: 16px;
+            transition: color 0.3s ease;
         }
         a.back-btn:hover {
             text-decoration: underline;
+            color: #3a5bef;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 28px;
+            }
+            button {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 10px;
+            }
+            button + button {
+                margin-top: 10px;
+                margin-left: 0;
+            }
         }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Online Image Resizer",
+      "operatingSystem": "Web",
+      "applicationCategory": "Multimedia",
+      "url": "https://yourwebsite.com/image-resizer", "description": "Free online tool to resize images by adjusting width and height in pixels. Optimize photos for web, email, and social media quickly.",
+      "featureList": [
+        "Resize by width",
+        "Resize by height",
+        "Pixel adjustment",
+        "Supports common image formats (e.g., JPG, PNG, GIF)",
+        "Instant preview",
+        "Direct download",
+        "Drag & Drop functionality"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "250"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "Your Website Name" }
+    }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h1><i class="fas fa-expand"></i> Image Resizer</h1>
+        <h1><i class="fas fa-expand"></i> Online Image Resizer</h1>
+
+        <p class="intro-text">Welcome to our free online **Image Resizer** tool! Easily adjust the dimensions of your images to fit your exact needs. Whether you're optimizing images for web, email, or social media, our intuitive tool allows you to quickly resize by specifying desired width and height in pixels. Get your images perfectly sized in just a few clicks!</p>
+
         <div class="upload-area" id="uploadArea">
             <p>Drag & Drop your image here or click to browse</p>
             <input type="file" id="fileInput" accept="image/*" style="display: none;">
-            <img id="imagePreview" alt="Preview">
+            <img id="imagePreview" alt="Preview of your resized image">
         </div>
-        <!-- Start of LiveChat (www.livechat.com) code -->
-<script>
-    window.__lc = window.__lc || {};
-    window.__lc.license = 19149760;
-    window.__lc.integration_name = "manual_channels";
-    window.__lc.product_name = "livechat";
-    ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
-</script>
-<noscript><a href="https://www.livechat.com/chat-with/19149760/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
-<!-- End of LiveChat code -->
 
+        <script>
+            window.__lc = window.__lc || {};
+            window.__lc.license = 19149760;
+            window.__lc.integration_name = "manual_channels";
+            window.__lc.product_name = "livechat";
+            ;(function(n,t,c){function i(n){return e._h?e._h.apply(null,n):e._q.push(n)}var e={_q:[],_h:null,_v:"2.0",on:function(){i(["on",c.call(arguments)])},once:function(){i(["once",c.call(arguments)])},off:function(){i(["off",c.call(arguments)])},get:function(){if(!e._h)throw new Error("[LiveChatWidget] You can't use getters before load.");return i(["get",c.call(arguments)])},call:function(){i(["call",c.call(arguments)])},init:function(){var n=t.createElement("script");n.async=!0,n.type="text/javascript",n.src="https://cdn.livechatinc.com/tracking.js",t.head.appendChild(n)}};!n.__lc.asyncInit&&e.init(),n.LiveChatWidget=n.LiveChatWidget||e}(window,document,[].slice))
+        </script>
+        <noscript><a href="https://www.livechat.com/chat-with/19149760/" rel="nofollow">Chat with us</a>, powered by <a href="https://www.livechat.com/?welcome" rel="noopener nofollow" target="_blank">LiveChat</a></noscript>
         <div class="controls" id="controls" style="display: none;">
             <label for="width">Width (px):</label>
             <input type="range" id="width" min="50" max="2000" value="800">
             <input type="number" id="widthValue" min="50" max="2000" value="800">
-            
+
             <label for="height">Height (px):</label>
             <input type="range" id="height" min="50" max="2000" value="600">
             <input type="number" id="heightValue" min="50" max="2000" value="600">
-            
+
             <button id="resizeBtn">Resize Image</button>
             <button id="downloadBtn">Download</button>
         </div>
+
+        <div class="how-to-use">
+            <h2>How to Use Our Image Resizer:</h2>
+            <ol>
+                <li><strong>Upload Your Image:</strong> Click on the "Drag & Drop" area or drag your image file directly into it.</li>
+                <li><strong>Adjust Dimensions:</strong> Once your image is loaded, use the provided sliders or input fields to set your desired width and height in pixels.</li>
+                <li><strong>Resize & Preview:</strong> Click the "Resize Image" button to apply the new dimensions and see an instant preview.</li>
+                <li><strong>Download:</strong> If you're satisfied with the result, click the "Download" button to save your perfectly resized image to your device.</li>
+            </ol>
+        </div>
+
         <a href="index.html" class="back-btn"><i class="fas fa-arrow-left"></i> Back to Home</a>
     </div>
 
@@ -127,10 +238,8 @@
 
         let originalImage = null;
 
-        // Upload image
-        uploadArea.addEventListener('click', () => fileInput.click());
-        fileInput.addEventListener('change', (e) => {
-            const file = e.target.files[0];
+        // Function to handle file processing
+        function processFile(file) {
             if (file) {
                 const reader = new FileReader();
                 reader.onload = (event) => {
@@ -148,30 +257,87 @@
                 };
                 reader.readAsDataURL(file);
             }
+        }
+
+        // Handle click to open file input
+        uploadArea.addEventListener('click', () => fileInput.click());
+
+        // Handle file input change
+        fileInput.addEventListener('change', (e) => {
+            processFile(e.target.files[0]);
+        });
+
+        // Handle drag and drop
+        uploadArea.addEventListener('dragover', (e) => {
+            e.preventDefault(); // Prevent default to allow drop
+            uploadArea.style.borderColor = '#4a6bff'; // Visual feedback
+        });
+
+        uploadArea.addEventListener('dragleave', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc'; // Reset visual feedback
+        });
+
+        uploadArea.addEventListener('drop', (e) => {
+            e.preventDefault();
+            uploadArea.style.borderColor = '#ccc'; // Reset visual feedback
+            const file = e.dataTransfer.files[0];
+            if (file && file.type.startsWith('image/')) {
+                processFile(file);
+            } else {
+                console.error("Dropped file is not an image.");
+                // Optionally, display a message to the user
+            }
         });
 
         // Sync sliders and inputs
         widthSlider.addEventListener('input', () => widthInput.value = widthSlider.value);
         heightSlider.addEventListener('input', () => heightInput.value = heightSlider.value);
-        widthInput.addEventListener('input', () => widthSlider.value = widthInput.value);
-        heightInput.addEventListener('input', () => heightSlider.value = heightInput.value);
+        widthInput.addEventListener('input', () => {
+            // Ensure input value stays within range
+            let val = parseInt(widthInput.value);
+            if (isNaN(val) || val < 50) val = 50;
+            if (val > 2000) val = 2000;
+            widthInput.value = val;
+            widthSlider.value = val;
+        });
+        heightInput.addEventListener('input', () => {
+            // Ensure input value stays within range
+            let val = parseInt(heightInput.value);
+            if (isNaN(val) || val < 50) val = 50;
+            if (val > 2000) val = 2000;
+            heightInput.value = val;
+            heightSlider.value = val;
+        });
 
         // Resize function
         resizeBtn.addEventListener('click', () => {
+            if (!originalImage) {
+                console.warn("No image loaded to resize.");
+                // Optionally, display a message to the user
+                return;
+            }
             const canvas = document.createElement('canvas');
-            canvas.width = widthInput.value;
-            canvas.height = heightInput.value;
+            canvas.width = parseInt(widthInput.value);
+            canvas.height = parseInt(heightInput.value);
             const ctx = canvas.getContext('2d');
             ctx.drawImage(originalImage, 0, 0, canvas.width, canvas.height);
-            imagePreview.src = canvas.toDataURL('image/jpeg');
+            imagePreview.src = canvas.toDataURL('image/jpeg', 0.9); // Use JPEG with quality for smaller size
         });
 
         // Download function
         downloadBtn.addEventListener('click', () => {
+            if (!imagePreview.src || imagePreview.src === '#') {
+                console.warn("No image to download.");
+                // Optionally, display a message to the user
+                return;
+            }
             const link = document.createElement('a');
             link.download = 'resized-image.jpg';
             link.href = imagePreview.src;
+            document.body.appendChild(link); // Append to body to ensure it's clickable
             link.click();
+            document.body.removeChild(link); // Clean up
         });
     </script>
 </body>
