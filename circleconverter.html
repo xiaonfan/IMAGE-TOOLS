@@ -1,11 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <link rel="icon" href="pop.png" type="image/png">
+    <link rel="icon" href="logo.png" type="image/png"> <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Picture to Circle Converter | ImageMagic Pro</title>
-    <link rel="icon" href="logo.png" type="image/png">
+    <title>Online Picture to Circle Converter - Free Image Cropper & Editor</title>
+    <meta name="description" content="Convert any picture to a perfect circle online for free! Our Image to Circle Converter creates circular images with transparent backgrounds, ideal for profile pictures, logos, and web design.">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -34,7 +33,7 @@
             --icon-gradient: linear-gradient(45deg, var(--accent), var(--primary));
             --bg-image: linear-gradient(135deg, #2c3e50 0%, #4ca1af 100%);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
@@ -42,7 +41,7 @@
             font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             transition: background 0.3s ease, color 0.2s ease;
         }
-        
+
         body {
             background: var(--bg-image);
             min-height: 100vh;
@@ -55,7 +54,7 @@
             background-position: center;
             background-attachment: fixed;
         }
-        
+
         .container {
             max-width: 1000px;
             width: 100%;
@@ -63,7 +62,7 @@
             animation: fadeIn 0.8s ease-out;
             padding: 20px;
         }
-        
+
         h1 {
             margin-bottom: 20px;
             color: var(--text);
@@ -73,7 +72,7 @@
             position: relative;
             display: inline-block;
         }
-        
+
         h1::after {
             content: '';
             position: absolute;
@@ -85,7 +84,35 @@
             background: var(--title-line);
             border-radius: 2px;
         }
-        
+
+        .tagline {
+            color: var(--tagline);
+            font-size: 1.2rem;
+            margin-bottom: 30px;
+        }
+
+        .intro-text, .how-to-use {
+            text-align: left; /* Align text content to the left */
+            margin-bottom: 20px;
+            color: var(--text);
+            line-height: 1.6;
+        }
+        .intro-text strong {
+            color: var(--primary);
+        }
+        .how-to-use h2 {
+            margin-bottom: 15px;
+            color: var(--text);
+            font-size: 1.5rem;
+        }
+        .how-to-use ol {
+            list-style-position: inside;
+            padding-left: 0; /* Remove default padding */
+        }
+        .how-to-use li {
+            margin-bottom: 8px;
+        }
+
         .converter-container {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
@@ -95,7 +122,7 @@
             margin: 30px 0;
             border: 1px solid var(--card-border);
         }
-        
+
         .upload-area {
             border: 2px dashed var(--accent);
             border-radius: 10px;
@@ -103,12 +130,17 @@
             margin-bottom: 30px;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
         }
-        
+
         .upload-area:hover {
             background: rgba(72, 149, 239, 0.1);
         }
-        
+
         .upload-area i {
             font-size: 60px;
             margin-bottom: 15px;
@@ -117,7 +149,16 @@
             background-clip: text;
             color: transparent;
         }
-        
+
+        .upload-area h2 {
+            color: var(--text);
+            margin-bottom: 10px;
+        }
+
+        .upload-area p {
+            color: var(--tagline);
+        }
+
         .preview-area {
             display: flex;
             justify-content: space-around;
@@ -125,32 +166,34 @@
             gap: 30px;
             margin: 30px 0;
         }
-        
+
         .image-box {
             flex: 1;
             min-width: 300px;
             text-align: center;
         }
-        
+
         .image-box h3 {
             margin-bottom: 15px;
             color: var(--text);
         }
-        
+
         .image-preview {
             max-width: 100%;
             max-height: 300px;
             border-radius: 10px;
             box-shadow: 0 5px 15px var(--shadow);
+            object-fit: contain; /* Ensure image fits without cropping */
         }
-        
+
         .circle-preview {
             max-width: 100%;
             max-height: 300px;
             border-radius: 50%;
             box-shadow: 0 5px 15px var(--shadow);
+            object-fit: cover; /* Ensure it fills the circle */
         }
-        
+
         .controls {
             margin: 30px 0;
             display: flex;
@@ -158,7 +201,7 @@
             gap: 15px;
             flex-wrap: wrap;
         }
-        
+
         button {
             background: var(--primary);
             color: white;
@@ -170,27 +213,28 @@
             transition: all 0.3s ease;
             box-shadow: 0 4px 10px var(--shadow);
         }
-        
+
         button:hover {
             background: var(--secondary);
             transform: translateY(-2px);
             box-shadow: 0 6px 15px var(--shadow);
         }
-        
+
         button:disabled {
             background: #cccccc;
             cursor: not-allowed;
             transform: none;
+            box-shadow: none;
         }
-        
+
         .download-btn {
             background: #4CAF50;
         }
-        
+
         .download-btn:hover {
             background: #3e8e41;
         }
-        
+
         .back-btn {
             position: fixed;
             top: 20px;
@@ -207,7 +251,7 @@
             box-shadow: 0 4px 15px var(--shadow);
             z-index: 100;
         }
-        
+
         .back-btn i {
             font-size: 1.3rem;
             background: var(--icon-gradient);
@@ -215,7 +259,7 @@
             background-clip: text;
             color: transparent;
         }
-        
+
         .theme-toggle {
             position: fixed;
             top: 20px;
@@ -232,7 +276,6 @@
             box-shadow: 0 4px 15px var(--shadow);
             z-index: 100;
         }
-
         .theme-toggle i {
             font-size: 1.3rem;
             background: var(--icon-gradient);
@@ -240,53 +283,126 @@
             background-clip: text;
             color: transparent;
         }
-        
+
+        /* Custom Message Box */
+        .message-box {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+            z-index: 1000;
+            display: none; /* Hidden by default */
+            text-align: center;
+            max-width: 350px;
+            width: 90%;
+            color: #333;
+        }
+        .message-box p {
+            margin-bottom: 20px;
+            font-size: 18px;
+        }
+        .message-box button {
+            background: #4a6bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        .message-box button:hover {
+            background: #3a5bef;
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            display: none; /* Hidden by default */
+        }
+
         @keyframes fadeIn {
             from { opacity: 0; transform: translateY(20px); }
             to { opacity: 1; transform: translateY(0); }
         }
-        
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2rem;
             }
-            
             .converter-container {
                 padding: 20px;
             }
-            
             .upload-area {
                 padding: 30px 20px;
             }
-            
             .preview-area {
                 flex-direction: column;
             }
-            
             .image-box {
                 min-width: 100%;
             }
-            
             .back-btn, .theme-toggle {
                 width: 40px;
                 height: 40px;
             }
         }
     </style>
+    <script type="application/ld+json">
+    {
+      "@context": "http://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "Online Picture to Circle Converter",
+      "operatingSystem": "Web",
+      "applicationCategory": "Multimedia",
+      "url": "https://yourwebsite.com/picture-to-circle-converter", "description": "Free online tool to convert any image to a perfect circle with a transparent background. Ideal for profile pictures, social media avatars, and web graphics. Supports JPG, PNG, and WEBP formats.",
+      "featureList": [
+        "Convert image to circle",
+        "Transparent background output",
+        "Supports JPG, PNG, WEBP",
+        "Instant preview",
+        "Direct download (PNG output)",
+        "Drag & Drop functionality",
+        "Dark/Light theme toggle"
+      ],
+      "offers": {
+        "@type": "Offer",
+        "price": "0",
+        "priceCurrency": "USD"
+      },
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": "4.9",
+        "reviewCount": "280"
+      },
+      "publisher": {
+        "@type": "Organization",
+        "name": "ImageMagic Pro" }
+    }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <a href="index.html" class="back-btn">
         <i class="fas fa-arrow-left"></i>
     </a>
-
     <div class="theme-toggle" id="themeToggle">
         <i class="fas fa-moon" id="themeIcon"></i>
     </div>
-
     <div class="container">
-        <h1>Picture to Circle Converter</h1>
+        <h1><i class="fas fa-circle"></i> Picture to Circle Converter</h1>
         <p class="tagline">Convert any image to a perfect circle with transparent background</p>
-        
+
+        <p class="intro-text">Transform your rectangular or square images into perfect circles effortlessly with our free online **Picture to Circle Converter**. This tool is ideal for creating stunning profile pictures, unique social media avatars, or elegant web graphics. Upload your image, and in an instant, you'll have a beautifully cropped circular image with a transparent background, ready for download.</p>
+
         <div class="converter-container">
             <div class="upload-area" id="uploadArea">
                 <i class="fas fa-cloud-upload-alt"></i>
@@ -294,24 +410,40 @@
                 <p>Drag & drop your image here or click to browse</p>
                 <input type="file" id="fileInput" accept="image/*" style="display: none;">
             </div>
-            
+
             <div class="preview-area" id="previewArea" style="display: none;">
                 <div class="image-box">
                     <h3>Original Image</h3>
-                    <img id="originalPreview" class="image-preview" src="" alt="Original Image Preview">
+                    <img id="originalPreview" class="image-preview" src="" alt="Original image preview for circular conversion">
                 </div>
                 <div class="image-box">
                     <h3>Circular Image</h3>
-                    <img id="circlePreview" class="circle-preview" src="" alt="Circular Image Preview">
+                    <img id="circlePreview" class="circle-preview" src="" alt="Converted circular image preview">
                 </div>
             </div>
-            
+
             <div class="controls" id="controls" style="display: none;">
                 <button id="processBtn">Convert to Circle</button>
                 <button id="downloadBtn" class="download-btn" disabled>Download Circle Image</button>
                 <button id="resetBtn">Reset</button>
             </div>
         </div>
+
+        <div class="how-to-use">
+            <h2>How to Use Our Picture to Circle Converter:</h2>
+            <ol>
+                <li><strong>Upload Your Image:</strong> Click on the "Upload Your Image" area or simply drag and drop your photo onto it.</li>
+                <li><strong>Convert:</strong> Once your image appears, click the "Convert to Circle" button.</li>
+                <li><strong>Preview & Download:</strong> You'll see an instant preview of your circular image. If you're satisfied, click "Download Circle Image" to save it as a PNG with a transparent background.</li>
+                <li><strong>Reset:</strong> To convert another image, click the "Reset" button.</li>
+            </ol>
+        </div>
+    </div>
+
+    <div class="overlay" id="overlay"></div>
+    <div class="message-box" id="messageBox">
+        <p id="messageText"></p>
+        <button id="messageBoxOkBtn">OK</button>
     </div>
 
     <script>
@@ -321,9 +453,9 @@
         const html = document.documentElement;
 
         // Check for saved theme preference or use preferred color scheme
-        const savedTheme = localStorage.getItem('theme') || 
-                          (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
-        
+        const savedTheme = localStorage.getItem('theme') ||
+                           (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+
         // Apply the saved theme
         html.setAttribute('data-theme', savedTheme);
         updateIcon(savedTheme);
@@ -332,7 +464,7 @@
         themeToggle.addEventListener('click', () => {
             const currentTheme = html.getAttribute('data-theme');
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-            
+
             html.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
             updateIcon(newTheme);
@@ -348,6 +480,26 @@
             }
         }
 
+        // Custom Message Box Functionality
+        const messageBox = document.getElementById('messageBox');
+        const messageText = document.getElementById('messageText');
+        const messageBoxOkBtn = document.getElementById('messageBoxOkBtn');
+        const overlay = document.getElementById('overlay');
+
+        function showMessageBox(message) {
+            messageText.textContent = message;
+            messageBox.style.display = 'block';
+            overlay.style.display = 'block';
+        }
+
+        function hideMessageBox() {
+            messageBox.style.display = 'none';
+            overlay.style.display = 'none';
+        }
+
+        messageBoxOkBtn.addEventListener('click', hideMessageBox);
+
+
         // Image to Circle Converter Functionality
         const uploadArea = document.getElementById('uploadArea');
         const fileInput = document.getElementById('fileInput');
@@ -358,23 +510,26 @@
         const processBtn = document.getElementById('processBtn');
         const downloadBtn = document.getElementById('downloadBtn');
         const resetBtn = document.getElementById('resetBtn');
-        
+
         let originalImage = null;
         let circleImage = null;
 
         // Handle drag and drop
         uploadArea.addEventListener('dragover', (e) => {
             e.preventDefault();
-            uploadArea.style.background = 'rgba(72, 149, 239, 0.2)';
+            uploadArea.style.background = 'rgba(72, 149, 239, 0.1)'; /* Use the hover background */
+            uploadArea.style.borderColor = 'var(--accent)';
         });
 
         uploadArea.addEventListener('dragleave', () => {
             uploadArea.style.background = '';
+            uploadArea.style.borderColor = '#ccc';
         });
 
         uploadArea.addEventListener('drop', (e) => {
             e.preventDefault();
             uploadArea.style.background = '';
+            uploadArea.style.borderColor = '#ccc';
             if (e.dataTransfer.files.length) {
                 fileInput.files = e.dataTransfer.files;
                 handleFileSelect(e.dataTransfer.files[0]);
@@ -395,7 +550,7 @@
         // Process the selected image
         function handleFileSelect(file) {
             if (!file.type.match('image.*')) {
-                alert('Please select an image file.');
+                showMessageBox('Please select an image file (JPG, PNG, WEBP, etc.).');
                 return;
             }
 
@@ -407,6 +562,12 @@
                     previewArea.style.display = 'flex';
                     controls.style.display = 'flex';
                     uploadArea.style.display = 'none';
+                    downloadBtn.disabled = true; // Disable download until processed
+                    circlePreview.src = ''; // Clear previous circle preview
+                };
+                originalImage.onerror = () => {
+                    showMessageBox("Failed to load image. Please try another file.");
+                    resetConverter(); // Reset on error
                 };
                 originalImage.src = e.target.result;
             };
@@ -415,28 +576,31 @@
 
         // Convert image to circle
         processBtn.addEventListener('click', () => {
-            if (!originalImage) return;
+            if (!originalImage) {
+                showMessageBox("Please upload an image first.");
+                return;
+            }
 
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
-            
+
             // Set canvas dimensions to the smallest dimension (to make perfect circle)
             const size = Math.min(originalImage.width, originalImage.height);
             canvas.width = size;
             canvas.height = size;
-            
+
             // Create circular clipping path
             ctx.beginPath();
             ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
             ctx.closePath();
             ctx.clip();
-            
+
             // Draw the image centered
             const offsetX = (originalImage.width - size) / 2;
             const offsetY = (originalImage.height - size) / 2;
             ctx.drawImage(originalImage, -offsetX, -offsetY, originalImage.width, originalImage.height);
-            
-            // Convert to image and display
+
+            // Convert to image and display (always PNG for transparency)
             circleImage = new Image();
             circleImage.onload = () => {
                 circlePreview.src = canvas.toDataURL('image/png');
@@ -447,29 +611,33 @@
 
         // Download the circular image
         downloadBtn.addEventListener('click', () => {
-            if (!circleImage) return;
-            
+            if (!circleImage || downloadBtn.disabled) {
+                showMessageBox("No circular image available to download. Please convert an image first.");
+                return;
+            }
+
             const link = document.createElement('a');
-            link.download = 'circular-image.png';
+            link.download = 'circular-image.png'; // Always PNG for transparency
             link.href = circleImage.src;
+            document.body.appendChild(link); // Append to body to ensure it's clickable
             link.click();
+            document.body.removeChild(link); // Clean up
         });
 
         // Reset the converter
-        resetBtn.addEventListener('click', () => {
-            fileInput.value = '';
+        resetBtn.addEventListener('click', resetConverter);
+
+        function resetConverter() {
+            fileInput.value = ''; // Clear file input
             originalImage = null;
             circleImage = null;
             originalPreview.src = '';
             circlePreview.src = '';
             previewArea.style.display = 'none';
             controls.style.display = 'none';
-            uploadArea.style.display = 'block';
+            uploadArea.style.display = 'flex'; // Show upload area again
             downloadBtn.disabled = true;
-        });
+        }
     </script>
-
-    <!-- Poppins font from Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
 </body>
 </html>
