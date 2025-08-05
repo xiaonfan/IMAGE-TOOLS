@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" href="gg.png" type="image/png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Image to Text Converter – Free Online Tool</title>
+  <meta name="description" content="Convert images to text instantly using our free online tool. Upload photos and get readable, copyable text in seconds. Fast, free and easy!">
+  <link rel="icon" href="favicon.png" type="image/png" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f7f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    header {
+      background-color: #0066cc;
+      color: white;
+      padding: 1rem 2rem;
+      text-align: center;
+    }
+
+    h1 {
+      margin: 0;
+      font-size: 2rem;
+    }
+
+    .container {
+      max-width: 800px;
+      margin: 2rem auto;
+      background: white;
+      padding: 2rem;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+
+    .drop-area {
+      border: 2px dashed #0066cc;
+      border-radius: 8px;
+      padding: 3rem;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+
+    .drop-area:hover {
+      background-color: #eaf4ff;
+    }
+
+    .drop-area p {
+      font-size: 1.2rem;
+    }
+
+    #text-output {
+      margin-top: 2rem;
+      white-space: pre-wrap;
+      background: #f1f1f1;
+      padding: 1rem;
+      border-radius: 5px;
+      min-height: 100px;
+    }
+
+    button {
+      background: #0066cc;
+      color: white;
+      border: none;
+      padding: 0.7rem 1.5rem;
+      border-radius: 5px;
+      font-size: 1rem;
+      margin-top: 1rem;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background: #004da3;
+    }
+
+    section {
+      margin-top: 2rem;
+    }
+
+    section h2 {
+      color: #0066cc;
+    }
+
+    footer {
+      text-align: center;
+      padding: 1rem;
+      background: #f1f1f1;
+      font-size: 0.9rem;
+      margin-top: 3rem;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Free Image to Text Converter</h1>
+  </header>
+
+  <div class="container">
+    <div class="drop-area" id="drop-area">
+      <p>Drag & Drop your image here to extract text</p>
+    </div>
+    <input type="file" id="fileElem" accept="image/*" style="display:none;" />
+    <div id="text-output">Text will appear here...</div>
+  </div>
+
+  <div class="container">
+    <section>
+      <h2>Convert Image to Text Online – Free Tool</h2>
+      <p>
+        Our free online image to text converter allows you to extract readable content from any photo or screenshot instantly. Whether you're working with scanned notes, pictures with printed text, or any image file, you can get the actual text quickly. This tool supports JPG, PNG, and JPEG formats. Simply drag and drop your image and let the tool convert it into selectable, copyable text.
+      </p>
+      <p>
+        Stop typing manually from images. This converter saves your time and effort by providing fast and accurate results. It’s free, works on all devices, and doesn’t require sign-up. Designed to be clean and simple, this website ensures you get your converted text in the easiest way possible.
+      </p>
+    </section>
+  </div>
+
+  <footer>
+    &copy; 2025 Image to Text Tool. All rights reserved.
+  </footer>
+
+  <script>
+    const dropArea = document.getElementById("drop-area");
+    const fileInput = document.getElementById("fileElem");
+    const textOutput = document.getElementById("text-output");
+
+    dropArea.addEventListener("click", () => fileInput.click());
+
+    ["dragenter", "dragover", "dragleave", "drop"].forEach(eventName => {
+      dropArea.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+      });
+    });
+
+    dropArea.addEventListener("drop", (e) => {
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        handleFile(files[0]);
+      }
+    });
+
+    fileInput.addEventListener("change", (e) => {
+      if (e.target.files.length) {
+        handleFile(e.target.files[0]);
+      }
+    });
+
+    async function handleFile(file) {
+      textOutput.textContent = "Processing image, please wait...";
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("apikey", "K83454926988957");
+
+      try {
+        const response = await fetch("https://api.ocr.space/parse/image", {
+          method: "POST",
+          body: formData
+        });
+        const result = await response.json();
+        const parsedText = result.ParsedResults?.[0]?.ParsedText || "No text found.";
+        textOutput.textContent = parsedText;
+      } catch (error) {
+        textOutput.textContent = "Error reading image.";
+      }
+    }
+  </script>
+</body>
+</html>
